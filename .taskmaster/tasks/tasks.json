@@ -1,0 +1,588 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Update Project Branding and Configuration",
+        "description": "Transform Next.js app with dashboard/settings structure into BUYO platform with proper branding, metadata, and Korean language support",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "details": "Update existing Next.js project structure that includes app/ directory with dashboard/settings routes, components/ui with shadcn, integrated Supabase, Tailwind v4, and Biome configuration. Focus on BUYO-specific branding integration.",
+        "testStrategy": "Verify BUYO metadata appears correctly in browser, confirm Korean language configuration works, validate theme colors apply correctly, test dashboard and settings routes still function",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Update app/layout.tsx metadata for BUYO branding",
+            "description": "Replace generic metadata with BUYO-specific title, description, and Open Graph tags",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Update metadata object in layout.tsx with Korean and English titles, descriptions focused on Korean biotech investment platform",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Modify app/page.tsx for BUYO landing page",
+            "description": "Transform default landing page to showcase BUYO's biotech investment platform",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Update hero section, value propositions, and call-to-action to reflect Korean biotech focus. Ensure compatibility with existing dashboard routing",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Add Korean i18n configuration to next.config.ts",
+            "description": "Configure Next.js internationalization for Korean language support",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Add i18n configuration with 'ko' and 'en' locales, set Korean as default, configure locale routing",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Update package.json with BUYO project details",
+            "description": "Replace placeholder project information with BUYO platform details",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Update name, description, keywords, repository links, and author information to reflect Korean biotech investment platform",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Add BUYO theme colors to tailwind.config.ts",
+            "description": "Integrate BUYO brand colors into Tailwind v4 configuration",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Add custom color palette for BUYO branding while maintaining compatibility with shadcn/ui components and existing dashboard styling",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Design Supabase Database Schema",
+        "description": "Create comprehensive database schema for users, companies, events, recommendations, and investment profiles",
+        "status": "pending",
+        "dependencies": [1],
+        "priority": "high",
+        "details": "Build upon existing Supabase structure in supabase/ folder. Create new migration files in supabase/migrations/ for Korean biotech-specific tables: companies (supporting 485+ biotech companies), investment_profiles, events, recommendations, glossary_terms. Leverage existing auth.users table for user authentication. Implement RLS policies for each new table to ensure data security. Update existing seed.sql with sample Korean biotech company data for development and testing",
+        "testStrategy": "Create schema migration files and validate they apply correctly, test with sample Korean biotech company data from seed.sql, verify RLS policies work correctly for all user roles, validate data types and constraints handle Korean text properly, ensure existing auth.users integration works",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create companies table migration",
+            "description": "Design and create migration for companies table to store 485+ Korean biotech companies",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create new migration file in supabase/migrations/ for companies table with fields for Korean company names, descriptions, stock symbols, market data, and biotech classifications",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Create investment_profiles table migration",
+            "description": "Design migration for user investment profiles linked to auth.users",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create migration for investment_profiles table with foreign key to auth.users, risk tolerance levels, technology preferences, investment horizon, and Korean language preferences",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create events table migration",
+            "description": "Design migration for biotech industry events and company milestones",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create migration for events table with company references, event types, dates, Korean descriptions, and impact classifications",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Create recommendations table migration",
+            "description": "Design migration for AI-generated investment recommendations",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create migration for recommendations table with user and company references, recommendation types, confidence scores, reasoning text in Korean, and expiration dates",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create glossary_terms table migration",
+            "description": "Design migration for Korean biotech terminology glossary",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create migration for glossary_terms table with Korean terms, English translations, categories, and detailed explanations for biotech concepts",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Implement RLS policies for all tables",
+            "description": "Create Row Level Security policies for data access control",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Design and implement RLS policies for companies, investment_profiles, events, recommendations, and glossary_terms tables with appropriate user access controls",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Update seed.sql with Korean biotech data",
+            "description": "Populate seed.sql with sample Korean biotech company data",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Add representative Korean biotech companies, sample investment profiles, events, and glossary terms to existing seed.sql for development and testing purposes",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Implement Investment Personality Assessment",
+        "description": "Create 10-question investment quiz component with Korean UI and risk profiling logic using existing project structure",
+        "status": "pending",
+        "dependencies": [2],
+        "priority": "high",
+        "details": "Build multi-step quiz using shadcn/ui components in existing components/ui structure. Create app/onboarding/page.tsx for main quiz flow, components/quiz/investment-quiz.tsx using shadcn Form/Card/RadioGroup components, and components/quiz/quiz-step.tsx for individual questions. Implement useQuizState hook in hooks/ folder for state management. Store quiz results in Supabase investment_profiles table via app/api/quiz/route.ts API endpoint. Include risk tolerance assessment, technology preferences, and investment horizon questions with Korean UI text.",
+        "testStrategy": "Test all question flows and navigation, validate form submission through API route, verify data storage in Supabase investment_profiles table, confirm Korean text displays correctly across all quiz components, test responsive design on mobile devices, validate useQuizState hook functionality",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create onboarding page structure",
+            "description": "Build app/onboarding/page.tsx with quiz layout and navigation",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create Next.js page component with proper routing, implement quiz progress indicator, add Korean language support for navigation elements",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Build investment quiz main component",
+            "description": "Create components/quiz/investment-quiz.tsx using shadcn Form, Card, and RadioGroup",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Implement main quiz container with shadcn/ui Form component, use Card for question display, implement RadioGroup for answer selection, add form validation and error handling",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create reusable quiz step component",
+            "description": "Build components/quiz/quiz-step.tsx for individual question rendering",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create flexible component to handle different question types (radio, scale, multiple choice), implement Korean text rendering, add smooth transitions between steps",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement quiz state management hook",
+            "description": "Create hooks/useQuizState.tsx for managing quiz progress and answers",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Build custom hook to manage current step, user answers, validation state, and quiz completion status. Include functions for navigation, answer storage, and progress calculation",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Create quiz API endpoint",
+            "description": "Build app/api/quiz/route.ts for quiz submission handling",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Implement POST endpoint to receive quiz answers, validate submission data, calculate risk profile scores, and store results in Supabase investment_profiles table",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Design 10 assessment questions",
+            "description": "Define quiz questions for risk tolerance, technology preferences, and investment horizon",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Create comprehensive question set covering risk appetite, biotech sector interests, investment timeline, market volatility comfort, and technology adoption preferences. Include Korean translations for all questions and answer options",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Implement Supabase integration",
+            "description": "Set up investment_profiles table integration and data storage logic",
+            "status": "pending",
+            "dependencies": [],
+            "details": "Configure Supabase client for quiz data storage, implement proper error handling for database operations, ensure data validation before storage",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Create Company Data Models and API Integration",
+        "description": "Implement company data structure and integrate with Korea Investment & Securities API for real-time stock data",
+        "details": "Create TypeScript interfaces for company data, implement API routes for fetching stock prices, set up data validation and error handling. Support 485+ Korean biotech companies",
+        "testStrategy": "Unit tests for data models, integration tests for API endpoints, validate real-time price updates, test error handling for API failures",
+        "priority": "high",
+        "dependencies": [2],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Design TypeScript Interfaces for Company Data",
+            "description": "Create comprehensive TypeScript interfaces and types for Korean biotech company data structures",
+            "dependencies": [],
+            "details": "Define interfaces for Company, StockData, FinancialMetrics, TechnologyInfo, and related types. Include fields for Korean company names, stock codes, sector classifications, and biotech-specific attributes. Ensure type safety for 485+ company data management.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Korea Investment & Securities API Client",
+            "description": "Build API client for Korea Investment & Securities with authentication and rate limiting",
+            "dependencies": ["4.1"],
+            "details": "Create API client class with methods for authentication, stock price fetching, and company data retrieval. Implement rate limiting, request queuing, and connection pooling to handle 485+ companies efficiently. Include API key management and request/response logging.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Create API Routes for Stock Data Endpoints",
+            "description": "Implement Next.js API routes for company data and real-time stock price endpoints",
+            "dependencies": ["4.1", "4.2"],
+            "details": "Build /api/companies, /api/stocks/[symbol], and /api/stocks/batch endpoints. Implement caching layer, request validation, and proper HTTP status codes. Support batch requests for multiple company data fetching.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Implement Data Validation and Sanitization Layer",
+            "description": "Create robust data validation for incoming API responses and user inputs",
+            "dependencies": ["4.1"],
+            "details": "Use Zod or similar library to validate API responses, sanitize company data, and ensure data integrity. Create validation schemas for Korean stock symbols, company names, and financial data. Handle edge cases for incomplete or malformed data.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Build Comprehensive Error Handling System",
+            "description": "Implement error handling for API failures, network issues, and data inconsistencies",
+            "dependencies": ["4.2", "4.3"],
+            "details": "Create error classes for different failure types, implement retry logic with exponential backoff, add circuit breaker pattern for API stability. Include user-friendly error messages in Korean and English. Log errors for monitoring and debugging.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Set Up Real-time Data Updates System",
+            "description": "Implement WebSocket or polling system for real-time stock price updates",
+            "dependencies": ["4.3", "4.5"],
+            "details": "Choose between WebSocket connections or optimized polling for real-time updates. Implement data broadcasting to connected clients, manage connection state, and handle reconnection logic. Optimize for 485+ companies with selective updates based on user watchlists.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Build Basic AI Recommendation Engine",
+        "description": "Implement initial recommendation algorithm that matches user profiles to biotech companies",
+        "details": "Create collaborative filtering algorithm using user investment profiles, implement content-based filtering for biotech categories, add confidence scoring for recommendations",
+        "testStrategy": "Validate recommendation quality with test profiles, ensure diverse recommendations, test performance with 100+ companies, verify Korean text handling",
+        "priority": "high",
+        "dependencies": [3, 4],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Build Data Preprocessing Pipeline",
+            "description": "Create data cleaning and feature extraction pipeline for user profiles and company data",
+            "dependencies": [],
+            "details": "Implement data validation, normalization, and feature engineering for user investment profiles and biotech company attributes. Handle missing data and prepare datasets for ML algorithms.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Collaborative Filtering Algorithm",
+            "description": "Develop user-based collaborative filtering using investment profile similarities",
+            "dependencies": ["5.1"],
+            "details": "Create similarity metrics for user profiles, implement nearest neighbors algorithm, generate user-company affinity scores based on similar users' preferences.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Build Content-Based Filtering System",
+            "description": "Implement content-based filtering using biotech company categories and attributes",
+            "dependencies": ["5.1"],
+            "details": "Create company feature vectors from categories, research focus, funding stage, and technology. Match against user preference vectors for content-based recommendations.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Develop Confidence Scoring System",
+            "description": "Create confidence metrics for recommendation quality assessment",
+            "dependencies": ["5.2", "5.3"],
+            "details": "Implement scoring based on data completeness, algorithm agreement, and user profile strength. Combine collaborative and content-based scores with confidence weighting.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Build Recommendation API Endpoints",
+            "description": "Create REST API endpoints for generating and serving recommendations",
+            "dependencies": ["5.4"],
+            "details": "Implement GET /api/recommendations with user ID parameter, pagination, and filtering options. Include recommendation explanations and confidence scores in response.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Optimize Algorithm Performance",
+            "description": "Implement caching and performance optimizations for recommendation generation",
+            "dependencies": ["5.5"],
+            "details": "Add Redis caching for computed similarities, implement batch processing for multiple users, optimize database queries, and add performance monitoring.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Add Korean Language Result Formatting",
+            "description": "Implement Korean localization for recommendation explanations and company descriptions",
+            "dependencies": ["5.4"],
+            "details": "Create Korean translation service for recommendation reasoning, format company names and descriptions in Korean, implement proper text formatting for Korean characters.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Develop Company Profile Dashboard",
+        "description": "Create comprehensive company detail pages with technology, financial, and news tabs",
+        "details": "Build tabbed interface using shadcn/ui components, implement responsive design for mobile-first experience, display real-time stock charts, financial metrics, and company technology information",
+        "testStrategy": "Test responsive design across devices, validate data loading states, confirm Korean biotech terminology displays correctly, verify chart functionality",
+        "priority": "medium",
+        "dependencies": [4],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Integrate DART API for Regulatory Filings",
+        "description": "Connect to Financial Supervisory Service DART API for Korean regulatory announcements and company filings",
+        "details": "Implement DART API client with proper authentication, create data processing pipeline for regulatory documents, parse Korean regulatory announcements, store in companies table",
+        "testStrategy": "Validate API authentication, test document parsing accuracy, verify Korean regulatory data processing, confirm real-time updates work",
+        "priority": "medium",
+        "dependencies": [4],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Build Real-Time Stock Price Charts",
+        "description": "Implement interactive stock charts with biotech-specific technical indicators and buy/sell signals",
+        "details": "Integrate charting library (Chart.js or Recharts), implement real-time price updates, add RSI, OBV, MFI indicators, create buy/sell signal visualization",
+        "testStrategy": "Test chart responsiveness and real-time updates, validate technical indicator calculations, verify mobile chart interactions, test with Korean market hours",
+        "priority": "medium",
+        "dependencies": [4],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement KIPRIS Patent Data Integration",
+        "description": "Connect to Korean Intellectual Property Office API for patent information and IP monitoring",
+        "details": "Create KIPRIS API client, implement patent data parsing and analysis, link patent information to biotech companies, process Korean patent documents",
+        "testStrategy": "Validate patent data accuracy, test Korean patent document processing, verify IP-to-company linking logic, confirm API rate limiting compliance",
+        "priority": "medium",
+        "dependencies": [4],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Create Biotech Terminology Glossary System",
+        "description": "Build integrated glossary with 200+ Korean biotech terms and tooltip explanations",
+        "details": "Create glossary database schema, implement tooltip component for term explanations, add Korean translations for technical terms (CAR-T, ADC, etc.), integrate throughout the platform",
+        "testStrategy": "Test tooltip functionality, verify Korean translations accuracy, validate glossary search capability, confirm mobile touch interactions",
+        "priority": "medium",
+        "dependencies": [2],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Develop Real-Time Event Monitoring System",
+        "description": "Build 24/7 monitoring for global biotech events with impact scoring and alert generation",
+        "details": "Implement event detection pipeline, integrate with global regulatory APIs (FDA, etc.), create event impact scoring algorithm, build alert generation system",
+        "testStrategy": "Test event detection accuracy, validate impact scoring logic, verify alert generation timing, confirm Korean event descriptions are properly translated",
+        "priority": "high",
+        "dependencies": [4, 2],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Design Event Detection Pipeline Architecture",
+            "description": "Architect the real-time event detection pipeline with data ingestion, processing, and filtering layers",
+            "dependencies": [],
+            "details": "Design microservices architecture for event detection, define data flow from sources to processing, implement event classification and filtering logic, set up message queues for real-time processing",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Integrate Global Regulatory APIs",
+            "description": "Build integrations with FDA, EMA, PMDA and other regulatory body APIs for biotech event data",
+            "dependencies": ["11.1"],
+            "details": "Implement API clients for FDA, EMA, PMDA regulatory databases, handle rate limiting and authentication, create unified data format for regulatory events, implement error handling and retry logic",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Develop Event Impact Scoring Algorithm",
+            "description": "Create ML-based algorithm to score biotech event impact on market and individual companies",
+            "dependencies": ["11.1"],
+            "details": "Design scoring model considering event type, company size, market conditions, historical impact data, implement machine learning pipeline for impact prediction, create scoring calibration system",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Build Alert Generation System",
+            "description": "Implement intelligent alert system with user preferences and multi-channel delivery",
+            "dependencies": ["11.2", "11.3"],
+            "details": "Create alert rules engine based on user preferences, implement multi-channel delivery (email, push, SMS), design alert prioritization logic, build alert deduplication and throttling",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Implement Real-Time Processing Infrastructure",
+            "description": "Set up scalable real-time data processing infrastructure for event streams",
+            "dependencies": ["11.1"],
+            "details": "Implement stream processing with Apache Kafka or similar, set up worker processes for event handling, design auto-scaling infrastructure, implement monitoring and health checks",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 6,
+            "title": "Create Korean Event Translation System",
+            "description": "Build automatic translation system for Korean biotech events to English with domain-specific terminology",
+            "dependencies": ["11.2"],
+            "details": "Integrate translation API with biotech terminology support, create glossary of Korean-English biotech terms, implement translation quality validation, handle complex regulatory Korean text",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 7,
+            "title": "Deploy 24/7 Monitoring Infrastructure",
+            "description": "Set up continuous monitoring system with failover and alerting for system health",
+            "dependencies": ["11.4", "11.5"],
+            "details": "Configure monitoring stack (Prometheus, Grafana), implement system health alerts, set up failover mechanisms, create operational dashboards, configure log aggregation and error tracking",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Build Push Notification System",
+        "description": "Implement personalized push notification delivery for critical biotech events and portfolio updates",
+        "details": "Integrate Firebase Cloud Messaging (FCM), create notification preferences system, implement personalized alert filtering based on user portfolios and interests",
+        "testStrategy": "Test notification delivery reliability, validate personalization logic, verify Korean notification text, test cross-platform delivery (iOS/Android/Web)",
+        "priority": "high",
+        "dependencies": [11, 3],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Create User Watchlist and Portfolio Tracking",
+        "description": "Enable users to track favorite companies and monitor portfolio performance with basic analytics",
+        "details": "Build watchlist management interface, implement portfolio tracking logic, create basic performance analytics, add portfolio value calculations and change tracking",
+        "testStrategy": "Test watchlist CRUD operations, validate portfolio calculations, verify real-time price updates in portfolio, confirm Korean currency formatting",
+        "priority": "medium",
+        "dependencies": [6, 8],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Implement News Aggregation and Sentiment Analysis",
+        "description": "Build AI-powered news curation with sentiment analysis for biotech companies",
+        "details": "Create news aggregation pipeline from multiple Korean and global sources, implement sentiment analysis using BioBERT model, filter and rank news by relevance and impact",
+        "testStrategy": "Validate news source reliability, test sentiment analysis accuracy on Korean biotech news, verify news-to-company linking, confirm real-time news updates",
+        "priority": "medium",
+        "dependencies": [4],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Build Recommendation Results Interface",
+        "description": "Create personalized recommendation display with reasoning, confidence scores, and filtering options",
+        "details": "Design card-based recommendation interface, implement filtering by risk level and company type, show recommendation reasoning and confidence scores, add Korean explanations",
+        "testStrategy": "Test recommendation display accuracy, validate filtering logic, verify Korean explanation text quality, confirm mobile responsiveness",
+        "priority": "medium",
+        "dependencies": [5],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 16,
+        "title": "Integrate ClinicalTrials.gov API",
+        "description": "Connect to global clinical trials database for real-time trial status and results monitoring",
+        "details": "Implement ClinicalTrials.gov API integration, create trial data processing pipeline, link trials to biotech companies, parse trial results and regulatory milestones",
+        "testStrategy": "Validate clinical trial data accuracy, test trial-to-company linking logic, verify trial status updates, confirm Korean translation of trial information",
+        "priority": "medium",
+        "dependencies": [4],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Create User Dashboard and Navigation",
+        "description": "Build main user dashboard with personalized content, navigation, and quick access to key features",
+        "details": "Design dashboard layout with portfolio overview, recommendation cards, recent alerts, and quick actions. Implement responsive navigation with Korean menu items",
+        "testStrategy": "Test dashboard loading performance, validate personalized content accuracy, verify mobile navigation usability, confirm Korean UI text appears correctly",
+        "priority": "medium",
+        "dependencies": [13, 15],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Implement User Settings and Preferences",
+        "description": "Build comprehensive settings page for notification preferences, investment parameters, and account management",
+        "details": "Create settings interface for alert frequency, content preferences, risk tolerance adjustments, language selection, and notification channel management",
+        "testStrategy": "Test settings persistence, validate preference updates affect recommendations, verify notification preference changes, confirm Korean settings interface",
+        "priority": "medium",
+        "dependencies": [12, 3],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Add Performance Optimization and Caching",
+        "description": "Implement caching strategies, API rate limiting, and performance optimizations for production deployment",
+        "details": "Implement Redis caching for API responses, add API rate limiting, optimize image loading, implement lazy loading for charts and data tables, add service worker for offline capability",
+        "testStrategy": "Load testing with 1000+ concurrent users, validate cache hit rates, test offline functionality, measure API response times, verify mobile performance",
+        "priority": "medium",
+        "dependencies": [4, 8, 11],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Deploy Production Environment and Monitoring",
+        "description": "Set up production deployment on Vercel with monitoring, analytics, and error tracking",
+        "details": "Configure Vercel deployment with environment variables, integrate Sentry for error tracking, set up Vercel Analytics, implement health checks and monitoring alerts",
+        "testStrategy": "Validate production environment functionality, test error tracking integration, verify analytics data collection, confirm monitoring alerts trigger properly",
+        "priority": "high",
+        "dependencies": [19],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-09-04T15:21:43.243Z",
+      "updated": "2025-09-04T15:21:43.243Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

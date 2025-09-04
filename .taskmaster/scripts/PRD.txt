@@ -1,0 +1,516 @@
+# Overview
+BUYO (Bio Uniting You and Opportunities)는 한국의 개인 투자자들을 위한 바이오테크 투자 정보 전문 플랫폼입니다. 기관투자자들만 독점하던 전문적인 바이오 투자 정보를 일반 개인 투자자들도 쉽게 접근할 수 있도록 하여 투자 정보 불평등을 해소하는 것을 목표로 합니다.
+
+**해결하려는 문제:** 개인 투자자들이 바이오테크 주식 투자 시 겪는 주요 장벽들:
+- 복잡한 전문 용어 (CAR-T, ADC, 임상시험 단계 등)
+- 여러 출처에 분산된 정보 (DART, KIPRIS, 증권사 리포트 등)
+- 중요한 이벤트에 대한 실시간 알림 부재 (FDA 승인, 임상 실패 등)
+- 기관투자자 대비 정보 접근 시차
+- 임상 데이터 및 특허 정보 해석의 어려움
+
+**타겟 사용자:**
+- 주요 타겟: 바이오 주식에 포트폴리오의 30% 이상 투자하는 액티브 개인 투자자 (20-40대)
+- 보조 타겟: 바이오 투자 입문을 원하는 초보 투자자
+- 향후 타겟: 효율적인 데이터 집계가 필요한 금융 기관
+
+**핵심 가치 제안:** 복잡한 바이오테크 투자 데이터를 AI 큐레이션과 약학 전문가 검수를 통해 개인 맞춤형, 실시간, 실행 가능한 인사이트로 변환하여 기존 프리미엄 서비스 대비 30-50% 저렴한 비용으로 정보에 기반한 투자 결# BUYO - AI-Powered Bio Stock Recommendation Platform
+## Product Requirements Document (PRD)
+
+# Overview
+BUYO (Bio Uniting You and Opportunities) is a specialized mobile application that democratizes biotechnology investment information for individual retail investors in South Korea. The platform addresses the critical information asymmetry problem where institutional investors have exclusive access to professional bio investment data, while individual investors struggle with complex technical terminology, fragmented data sources, and lack of real-time insights.
+
+**Problem Statement:** Individual investors face significant barriers when investing in biotechnology stocks due to:
+- Complex technical terminology (CAR-T, ADC, clinical trial phases)
+- Fragmented information across multiple sources (DART, KIPRIS, securities reports)
+- Lack of real-time notifications for critical events (FDA approvals, clinical failures)
+- Information lag compared to institutional investors
+- Difficulty interpreting clinical data and patent information
+
+**Target Users:** 
+- Primary: Active individual investors (ages 20-40) with 30%+ portfolio allocation to bio stocks
+- Secondary: Bio investment beginners seeking educational guidance
+- Tertiary: Institutional investors requiring efficient data aggregation tools
+
+**Value Proposition:** Transform complex biotechnology investment data into personalized, real-time, actionable insights through AI curation and pharmaceutical expert validation, enabling informed investment decisions at 30-50% lower cost than existing premium services.
+
+# Core Features
+
+## 1. AI-Powered Personalized Stock Recommendations
+**What it does:** 10-question investment personality assessment generates individual investment profiles, then AI curates 12-18 customized bio stock recommendations based on user preferences and risk tolerance.
+
+**Why it's important:** Eliminates information overload by filtering 485+ listed biotech companies down to personally relevant opportunities, similar to Netflix's content recommendation system.
+
+**How it works:** 
+- User completes questionnaire covering investment style, risk preference, technology interests
+- AI matches responses to company categories (R&D biotech, commercial pharma, CDMO/CMO, platform tech, diagnostics, etc.)
+- Real-time technical indicators (RSI, OBV, MFI) integrated for optimal timing signals
+- Recommendations updated dynamically based on market conditions and user feedback
+
+## 2. Comprehensive Company Intelligence Dashboard
+**What it does:** Consolidates fragmented biotech company data into unified, easily digestible company profiles with real-time updates.
+
+**Why it's important:** Saves 3-5 hours of research time per investment decision by aggregating information from multiple sources (DART filings, KIPRIS patents, clinical trial databases, financial reports).
+
+**How it works:**
+- **Technology Tab:** AI company summaries, core technology explanations, integrated glossary with tooltips for technical terms
+- **Charts Tab:** Real-time stock charts with biotech-specific technical indicators and buy/sell signals  
+- **Financial Tab:** Key metrics (revenue growth, R&D ratio, debt ratios, valuation multiples) with industry benchmarking
+- **News Tab:** AI-curated news with positive/negative sentiment analysis and impact assessment
+- Pharmaceutical expert validation for critical clinical and regulatory updates
+
+## 3. Real-Time Market Intelligence & Alerts
+**What it does:** 24/7 monitoring of global biotech events with instant notifications for portfolio-relevant developments.
+
+**Why it's important:** Enables rapid response to market-moving events that often occur outside Korean trading hours (FDA announcements, clinical trial results, partnership deals).
+
+**How it works:**
+- Multi-source data monitoring (global regulatory agencies, clinical trial databases, patent offices)
+- AI-powered event classification and impact scoring
+- Personalized alert delivery based on user's holdings and watchlist
+- 1-hour response time for critical events vs. quarterly/monthly traditional reports
+
+## 4. Educational Content & Community Features  
+**What it does:** Provides accessible educational content explaining complex biotech concepts and investment strategies.
+
+**Why it's important:** Bridges knowledge gap between pharmaceutical expertise and investment decision-making, enabling more informed individual investors.
+
+**How it works:**
+- Integrated glossary with 500+ biotech terms and explanations
+- Video content library explaining drug development processes, regulatory pathways, valuation methods
+- Expert-validated technology deep-dives and industry trend analysis
+- Community forum for investor discussions (planned for Phase 2)
+
+# User Experience
+
+## User Personas
+
+### Primary: Active Bio Investor (김현우, 35, IT Marketing Manager)
+- **Demographics:** 35-year-old professional, 30%+ portfolio in biotech stocks
+- **Behavior:** Spends 2-3 hours daily researching investments, follows global biotech news
+- **Pain Points:** Information interpretation difficulty, delayed reaction to overseas developments
+- **Goals:** Maximize returns through informed timing and stock selection
+- **BUYO Solution:** Real-time global alerts, AI-powered analysis, personalized recommendations
+
+### Secondary: Bio Investment Beginner (이서연, 23, University Student)  
+- **Demographics:** Young investor, ₩300,000 monthly investment budget
+- **Behavior:** Intimidated by technical terminology, seeks educational resources
+- **Pain Points:** Knowledge barrier, fear of making uninformed decisions
+- **Goals:** Learn biotech investing fundamentals, start with safe investments
+- **BUYO Solution:** Educational content, glossary integration, conservative recommendation mode
+
+### Tertiary: Institutional Analyst (박정훈, 42, Asset Management Analyst)
+- **Demographics:** Professional covering multiple biotech companies with limited research time
+- **Behavior:** Needs efficient data aggregation and analysis tools
+- **Pain Points:** Resource constraints, need for comprehensive market coverage
+- **Goals:** Efficient research workflow, competitive investment insights
+- **BUYO Solution:** API access, automated report generation, expert-validated analysis
+
+## Key User Flows
+
+### Investment Discovery Flow
+1. User completes 10-question investment personality assessment (1 minute)
+2. AI generates 12-18 personalized stock recommendations with reasoning
+3. User selects companies for deeper analysis
+4. Comprehensive company dashboard provides technical, financial, and news analysis
+5. User adds to watchlist or proceeds with investment decision
+
+### Real-Time Alert Response Flow  
+1. Global event detected (e.g., FDA approval announcement at 3 AM EST)
+2. AI analyzes impact on user's portfolio companies
+3. Personalized alert sent within 1 hour with impact assessment
+4. User accesses detailed analysis and recommended actions
+5. User adjusts portfolio based on informed analysis
+
+### Educational Onboarding Flow
+1. New user identifies as "beginner" during signup
+2. Guided tour of platform features with biotech investing basics
+3. Interactive glossary tour covering essential terminology  
+4. Recommended educational content path based on interests
+5. Practice portfolio creation with paper trading simulation
+
+## UI/UX Considerations
+
+- **Mobile-First Design:** Optimized for smartphone usage with Netflix-style card-based interface
+- **Information Hierarchy:** Complex data presented in progressive disclosure format (summary → details → deep analysis)
+- **Visual Data Presentation:** Charts, infographics, and color-coding for quick comprehension
+- **Accessibility:** High contrast ratios, large touch targets, screen reader compatibility
+- **Personalization:** Customizable dashboard layout, alert preferences, content recommendations
+- **Performance:** Sub-3-second load times, offline access to saved content
+
+# Technical Architecture
+
+## System Components
+
+### Frontend Applications
+- **Mobile App:** React Native for iOS/Android with cross-platform compatibility
+- **Web Dashboard:** React.js responsive web application for desktop analysis
+- **Progressive Web App:** Offline-capable PWA for consistent experience across devices
+
+### Backend Services
+- **API Gateway:** FastAPI-based REST API with rate limiting and authentication
+- **Recommendation Engine:** Machine learning service using collaborative filtering and content-based algorithms
+- **Data Processing Pipeline:** Apache Kafka for real-time event streaming, Redis for caching
+- **Notification Service:** Multi-channel alert system (push, email, SMS) with delivery tracking
+- **Content Management:** Headless CMS for educational content and expert insights
+
+### AI/ML Components  
+- **Natural Language Processing:** BioBERT model for biotech document analysis and sentiment scoring
+- **Recommendation System:** Neural collaborative filtering with biotech domain-specific features
+- **Event Detection:** Real-time monitoring with automated impact classification
+- **Personalization Engine:** User behavior analysis for content and stock recommendation optimization
+
+## Data Models
+
+### User Profile Schema
+```json
+{
+  "userId": "string",
+  "investmentProfile": {
+    "riskTolerance": "conservative|balanced|aggressive",
+    "investmentHorizon": "short|medium|long",
+    "technologyPreferences": ["immunotherapy", "diagnostics", "platform"],
+    "portfolioSize": "number",
+    "experienceLevel": "beginner|intermediate|advanced"
+  },
+  "preferences": {
+    "alertFrequency": "immediate|daily|weekly",
+    "contentTypes": ["news", "analysis", "education"],
+    "language": "ko|en"
+  }
+}
+```
+
+### Company Data Schema
+```json
+{
+  "companyId": "string", 
+  "basicInfo": {
+    "name": "string",
+    "ticker": "string", 
+    "sector": "biotech|pharma|diagnostics|equipment",
+    "marketCap": "number",
+    "employees": "number"
+  },
+  "technology": {
+    "primaryTech": ["CAR-T", "ADC", "gene therapy"],
+    "developmentStage": "research|preclinical|phase1|phase2|phase3|commercial",
+    "patents": "array",
+    "publications": "number"
+  },
+  "financial": {
+    "revenue": "number",
+    "rndSpending": "number", 
+    "cashPosition": "number",
+    "debtRatio": "number"
+  },
+  "events": "array"
+}
+```
+
+### Event Data Schema
+```json
+{
+  "eventId": "string",
+  "type": "clinical|regulatory|partnership|financial",
+  "severity": "critical|high|medium|low", 
+  "impactedCompanies": ["array"],
+  "timestamp": "datetime",
+  "description": "string",
+  "analysis": {
+    "sentiment": "positive|negative|neutral",
+    "impactScore": "number",
+    "recommendedAction": "buy|sell|hold|monitor"
+  }
+}
+```
+
+## APIs and Integrations
+
+### Government/Public APIs
+- **Financial Supervisory Service DART API:** Public company filings and regulatory announcements
+- **Korean Intellectual Property Office (KIPRIS) API:** Patent data and intellectual property monitoring  
+- **Korea Investment & Securities API:** Real-time stock prices, trading volumes, technical indicators
+- **US FDA API:** Drug approvals, clinical trial updates, safety announcements
+- **ClinicalTrials.gov API:** Global clinical trial status and results
+
+### Third-Party Services
+- **Cloud Infrastructure:** AWS EC2, RDS (PostgreSQL), ElastiCache (Redis), S3 for data storage
+- **Authentication:** JWT-based auth with social login integration (Kakao, Naver, Google)
+- **Analytics:** Google Analytics for user behavior, Mixpanel for product analytics
+- **Monitoring:** Sentry for error tracking, New Relic for performance monitoring
+- **Communication:** SendGrid for email, Twilio for SMS, FCM for push notifications
+
+### Internal APIs
+- **User Management API:** Profile, preferences, subscription management
+- **Recommendation API:** Personalized stock suggestions with confidence scores  
+- **Company Data API:** Comprehensive company information with real-time updates
+- **Analytics API:** User behavior tracking, A/B testing, performance metrics
+- **Content API:** Educational materials, expert insights, news curation
+
+## Infrastructure Requirements
+
+### Scalability Planning
+- **Phase 1 (0-1K users):** Single AWS instance with managed database
+- **Phase 2 (1K-10K users):** Auto-scaling groups, load balancers, CDN implementation  
+- **Phase 3 (10K+ users):** Microservices architecture, container orchestration, multi-region deployment
+
+### Performance Requirements
+- **API Response Time:** <500ms for 95th percentile requests
+- **Mobile App Launch:** <3 seconds to main screen
+- **Real-time Notifications:** <1 hour for critical events, <15 minutes for high-priority alerts
+- **Data Freshness:** Stock prices updated every minute, company data updated daily
+- **Uptime:** 99.9% availability with planned maintenance windows
+
+### Security & Compliance
+- **Data Protection:** End-to-end encryption for sensitive financial data
+- **Authentication:** Multi-factor authentication for premium accounts
+- **Compliance:** GDPR-compliant data handling, Korean financial services regulations
+- **API Security:** Rate limiting, request validation, SQL injection prevention
+- **Audit Logging:** Comprehensive logging for regulatory compliance and debugging
+
+# Development Roadmap
+
+## MVP Requirements (Phase 1: Sep 2025 - Dec 2025)
+**Core Objective:** Launch functional mobile app with basic AI recommendations and real-time alerts for 1,000-2,000 early adopters
+
+**Essential Features:**
+- User registration and investment personality assessment (10 questions)
+- AI-powered stock recommendation engine for 50-100 major biotech companies
+- Basic company profile pages with technology, financial, and news tabs
+- Real-time price charts with basic technical indicators
+- Push notification system for critical market events
+- Educational glossary with 200+ biotech terms
+
+**Technical Deliverables:**
+- React Native mobile app (iOS/Android)
+- FastAPI backend with PostgreSQL database
+- Basic recommendation algorithm using collaborative filtering
+- Integration with 3 core APIs (DART, KIPRIS, Korea Investment & Securities)
+- AWS infrastructure setup with auto-scaling capability
+
+**Success Metrics:**
+- 1,000-2,000 registered users
+- 500-800 monthly active users (MAU)
+- <1% app crash rate
+- 3.5+ app store rating
+- Basic revenue generation through banner advertising
+
+## Phase 2: User Growth & Platform Enhancement (Jan 2026 - Jun 2026)
+**Core Objective:** Scale to 10,000+ users with enhanced AI capabilities and premium subscription launch
+
+**Key Features:**
+- Advanced AI recommendation system with neural collaborative filtering
+- Premium subscription tier with detailed company analysis reports
+- Community features and expert Q&A integration
+- Expanded coverage to all 485 listed biotech companies
+- Comprehensive educational content library (videos, articles, webinars)
+- Portfolio tracking and performance analytics
+
+**Technical Enhancements:**
+- Microservices architecture implementation
+- Real-time data pipeline optimization
+- Advanced ML models for market prediction
+- API rate limiting and caching optimization
+- Enhanced security and fraud prevention measures
+
+**Success Metrics:**
+- 10,000+ registered users
+- 3,000-5,000 MAU
+- 1-2% premium subscription conversion rate
+- ₩2.5-5M monthly revenue
+- 8-12 minute average session duration
+
+## Phase 3: Monetization & Service Expansion (Jul 2026 - Dec 2026)
+**Core Objective:** Establish sustainable revenue streams and expand market reach
+
+**Advanced Features:**
+- Professional-grade investment analytics dashboard
+- B2B SaaS offerings for financial institutions
+- 1:1 expert consultation services
+- AI-powered portfolio optimization recommendations
+- Integration with brokerage accounts for seamless trading
+- Advanced risk management tools
+
+**Business Development:**
+- Partnerships with financial institutions and wealth management firms
+- Expert network expansion (pharmaceutical professionals, financial analysts)
+- Corporate API licensing program
+- International expansion preparation (English language support)
+
+**Success Metrics:**
+- ₩4-9M monthly revenue
+- 300-600 premium subscribers
+- 3-5 B2B enterprise clients
+- NPS score >50
+- Break-even operational status
+
+## Phase 4: Market Leadership & Global Expansion (Jan 2027+)
+**Core Objective:** Establish market leadership in biotech investment tools and prepare for strategic exit
+
+**Strategic Initiatives:**
+- AI investment advisor with conversational interface
+- Global biotech market coverage (US, EU, China markets)
+- Institutional-grade research reports and market intelligence
+- Advanced portfolio management with algorithmic trading integration
+- Strategic partnerships with global investment firms
+
+**Exit Preparation:**
+- Comprehensive user base of 20,000-30,000 active investors
+- ₩800M-1.5B annual revenue run-rate
+- Strategic acquisition discussions with major financial institutions
+- International market validation and expansion
+- Robust IP portfolio and competitive moats
+
+# Logical Dependency Chain
+
+## PoC Foundation Layer (Week 1-2: Must Build First)
+1. **Next.js Project Setup** - Initialize Next.js 14 with TypeScript and Tailwind CSS configuration
+2. **Supabase Integration** - Set up Supabase project, database schema, and authentication
+3. **shadcn/ui Installation** - Install and configure component library with basic theme
+4. **Basic Layout Components** - Header, navigation, and responsive layout structure
+
+## Core User Flow (Week 3-4: Essential User Journey)  
+5. **Authentication Pages** - Sign up, login, logout functionality using Supabase Auth
+6. **Investment Quiz Component** - Simple 5-question form with basic validation
+7. **Company Data Structure** - Basic database schema and sample data for 10-20 biotech companies
+8. **Recommendation Logic** - Simple matching algorithm based on quiz responses
+
+## Data Integration (Week 5-6: Connect Real Data)
+9. **Korea Investment API Integration** - Real-time stock price fetching via Next.js API routes  
+10. **Company Profile Pages** - Display basic company information and current stock price
+11. **Recommendation Results Page** - Show 3-5 recommended companies with reasoning
+12. **Basic Error Handling** - Handle API failures and loading states gracefully
+
+## Polish & Deployment (Week 7-8: Launch Ready)
+13. **Responsive Design Optimization** - Ensure mobile-first design works across devices
+14. **Performance Optimization** - Basic caching for API calls and image optimization
+15. **Vercel Deployment** - Set up production deployment with environment variables
+16. **Basic Analytics** - Vercel Analytics integration for user behavior tracking
+
+## Post-PoC Enhancements (Month 4+: If Continuing)
+17. **Expanded Company Database** - Add more biotech companies and detailed information
+18. **Enhanced UI Components** - More sophisticated charts and data visualization
+19. **User Dashboard** - Personal watchlist and basic portfolio tracking
+20. **Advanced Features** - News integration, alerts, and premium functionality
+
+**PoC Success Criteria:** By Week 8, a user should be able to visit the deployed site, register an account, complete the investment quiz, view personalized recommendations, and see real stock prices for recommended companies. This demonstrates the core value proposition with minimal complexity.
+
+# Risks and Mitigations
+
+## Technical Challenges
+
+### Data Quality and Reliability Risk
+**Risk:** Inconsistent or outdated information from multiple API sources could damage user trust and investment outcomes
+**Mitigation:** 
+- Implement comprehensive data validation pipelines with automated quality checks
+- Build redundant data sources for critical information
+- Establish SLAs with data providers and automated fallback systems
+- Create manual review processes for high-impact company updates
+- Implement user feedback mechanisms for data accuracy reporting
+
+### AI Recommendation Accuracy Risk  
+**Risk:** Poor recommendation quality could lead to user losses and potential legal liability
+**Mitigation:**
+- Include clear disclaimers about investment risks and algorithm limitations
+- Implement confidence scoring for all recommendations with transparency
+- Establish pharmaceutical expert review process for critical recommendations  
+- Build comprehensive backtesting framework for algorithm validation
+- Create user feedback loops to continuously improve recommendation quality
+- Consider professional liability insurance for algorithm-generated advice
+
+### Scalability and Performance Risk
+**Risk:** System overload during market volatility could render service unavailable when most needed
+**Mitigation:**
+- Design auto-scaling infrastructure from launch day
+- Implement comprehensive load testing and monitoring
+- Build caching layers for frequently accessed data
+- Create graceful degradation features during high-traffic periods
+- Establish partnership with CDN providers for global content delivery
+
+## Market and Business Risks
+
+### Competitive Response Risk
+**Risk:** Major financial institutions could launch competing services with superior resources
+**Mitigation:**
+- Focus on biotech specialization and pharmaceutical expertise as competitive moats
+- Build strong user community and network effects
+- Establish exclusive partnerships with industry experts and data providers  
+- Pursue intellectual property protection for unique algorithms and methodologies
+- Maintain rapid innovation pace to stay ahead of larger competitors
+
+### Regulatory Compliance Risk
+**Risk:** Financial services regulations could restrict operations or require expensive compliance infrastructure
+**Mitigation:**
+- Engage legal counsel specializing in Korean financial services law early
+- Structure service as information platform rather than investment advice
+- Implement robust user disclaimers and risk acknowledgment processes
+- Build compliance monitoring and reporting capabilities into platform
+- Establish relationships with regulatory bodies and industry associations
+
+### User Acquisition Cost Risk
+**Risk:** High customer acquisition costs could make unit economics unsustainable
+**Mitigation:**
+- Focus on organic growth through superior user experience and word-of-mouth
+- Build referral programs and community features to reduce acquisition costs
+- Target specific user segments with proven biotech investment interest
+- Create educational content for SEO and organic discovery
+- Form partnerships with existing financial platforms and investor communities
+
+## MVP Strategy and Resource Constraints
+
+### Technical Complexity vs. Time-to-Market
+**Risk:** Over-engineering initial product could delay market entry and feedback collection
+**Mitigation:**
+- Ruthlessly prioritize MVP features that provide immediate user value
+- Use proven open-source technologies and existing APIs to minimize development time
+- Implement feature flags for gradual rollout and quick iteration
+- Plan for technical debt paydown in Phase 2 development
+- Focus on 80/20 rule - deliver 80% of user value with 20% of full feature complexity
+
+### Team Capacity and Key Person Risk
+**Risk:** Small team size could create bottlenecks and single points of failure  
+**Mitigation:**
+- Document all critical processes and maintain code repository best practices
+- Cross-train team members on multiple system components
+- Establish partnerships with university programs for additional development resources
+- Create detailed technical documentation for knowledge transfer
+- Plan strategic hiring timeline to expand team capacity as revenue grows
+
+### Financial Sustainability
+**Risk:** Extended development period without revenue could exhaust initial funding
+**Mitigation:**
+- Maintain lean operational structure with bootstrap funding approach
+- Implement basic monetization (advertising) from MVP launch
+- Pursue government grants and startup competitions for additional funding
+- Plan multiple funding milestones rather than single large funding round
+- Maintain clear path to profitability with conservative financial projections
+
+# Appendix
+
+## Market Research Summary
+- Korean biotech market growing at 8.7% CAGR, reaching $215.9B by 2023
+- Individual investor participation in biotech stocks increased 31.7% in 2024
+- 66.7% of surveyed investors willing to pay ₩5,000-10,000 monthly for specialized biotech investment tools
+- 80% of investors expressed need for real-time market alerts and notifications
+- Major pain points: technical terminology barriers (73.3%), information interpretation difficulty (53.3%)
+
+## Technical Specifications
+- **Database:** PostgreSQL 13+ for relational data, Redis for caching and real-time features
+- **Backend Framework:** Python FastAPI with async/await for high-performance API endpoints
+- **Frontend Framework:** React Native for cross-platform mobile development
+- **AI/ML Stack:** Hugging Face Transformers, scikit-learn, PyTorch for recommendation engines
+- **Infrastructure:** AWS with auto-scaling, load balancing, and multi-AZ deployment
+- **Monitoring:** Comprehensive logging with Sentry, performance monitoring with New Relic
+- **Security:** JWT authentication, API rate limiting, data encryption at rest and in transit
+
+## Competitive Analysis Summary
+- **Securities Firm Reports:** High quality but expensive, delayed publication, limited personalization
+- **General Investment Apps:** Good UX but lack biotech specialization and expert validation
+- **Biotech Media:** Industry expertise but no investment actionability or personalization
+- **BUYO Advantage:** Combines real-time data, biotech expertise, AI personalization, and affordable pricing
+
+## Financial Projections Summary  
+- **Year 1:** ₩900-1,500M revenue (advertising + basic subscriptions)
+- **Year 2:** ₩4,900-9,600M revenue (premium subscriptions + B2B services)
+- **Break-even:** Month 18-24 with ₩700-900M monthly revenue
+- **Exit Target:** ₩10B valuation by 2028 with strategic acquisition by major financial institution

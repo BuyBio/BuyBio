@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__task-master-ai__parse_prd",
+      "mcp__task-master-ai__models",
+      "Bash(npx task-master parse-prd:*)",
+      "mcp__task-master-ai__get_tasks",
+      "mcp__task-master-ai__analyze_project_complexity",
+      "Bash(npx task-master:*)",
+      "mcp__task-master-ai__complexity_report",
+      "mcp__task-master-ai__expand_all",
+      "mcp__task-master-ai__update_task"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["task-master-ai"]
+}
