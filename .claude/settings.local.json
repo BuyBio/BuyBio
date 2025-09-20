@@ -1,0 +1,6 @@
+{
+  "permissions": {
+    "allow": ["Bash(npm ls:*)", "Bash(npm uninstall:*)", "Bash(pnpm remove:*)"]
+  },
+  "enabledMcpjsonServers": ["task-master-ai"]
+}
