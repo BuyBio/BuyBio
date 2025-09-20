@@ -39,6 +39,12 @@
   --color-chart-4: hsl(var(--chart-4));
   --color-chart-5: hsl(var(--chart-5));
 
+  --color-button-main: hsl(var(--button-main));
+  --color-button-main-hover: hsl(var(--button-main-hover));
+  --color-button-sub: hsl(var(--button-sub));
+  --color-button-sub-hover: hsl(var(--button-sub-hover));
+  --color-button-sub-foreground: hsl(var(--button-sub-foreground));
+
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
@@ -88,6 +94,11 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --button-main: 213 99% 67%;
+    --button-main-hover: 213 87% 57%;
+    --button-sub: 218 27% 94%;
+    --button-sub-hover: 218 31% 90%;
+    --button-sub-foreground: 196 4% 37%;
     --radius: 0.5rem;
   }
   .dark {
@@ -115,6 +126,11 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --button-main: 213 99% 67%;
+    --button-main-hover: 213 87% 57%;
+    --button-sub: 218 27% 14%;
+    --button-sub-hover: 218 31% 20%;
+    --button-sub-foreground: 196 4% 70%;
   }
 }
 
