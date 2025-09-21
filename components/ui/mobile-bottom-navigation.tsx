@@ -33,9 +33,9 @@ export default function MobileBottomNavigation() {
         </span>
       </Link>
       <Link
-        href="/stocks"
+        href="/"
         className={`flex flex-col items-center justify-center gap-[5px] h-16 w-[110px] transition-colors ${
-          pathname === "/stocks"
+          pathname === "/"
             ? "text-gray-900"
             : "text-[#9fa4a6] hover:text-gray-900"
         }`}

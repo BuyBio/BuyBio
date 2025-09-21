@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
-import { MobileLayout } from "@/components/layout/mobile-layout";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -10,8 +9,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "BuyBio - 바이오 투자 플랫폼",
+  description: "AI 기반 바이오 투자 추천 플랫폼",
 };
 
 const geistSans = Geist({
@@ -26,10 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.className} antialiased`}>
-        <MobileLayout>{children}</MobileLayout>
-      </body>
+    <html lang="ko">
+      <body className={`${geistSans.className} antialiased`}>{children}</body>
     </html>
   );
 }
