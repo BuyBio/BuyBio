@@ -63,7 +63,7 @@ Header.Title = ({ children }: { children: React.ReactNode }) => (
   <h1 className="text-lg font-semibold truncate">{children}</h1>
 );
 
-Header.MenuButton = ({ onClick }: { onClick: () => void }) => (
+Header.MenuButton = ({ onClick }: { onClick?: () => void }) => (
   <button
     type="button"
     onClick={onClick}
