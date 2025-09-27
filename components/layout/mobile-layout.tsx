@@ -15,7 +15,8 @@ export function MobileLayout({
   className = "",
   header,
 }: MobileLayoutProps) {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [sideOpen, setSideOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   // Header.MenuButton에 onClick 자동 주입
   let headerWithMenuHandler = header;
@@ -24,36 +25,29 @@ export function MobileLayout({
       header,
       {},
       React.Children.map(
-        (
-          header as React.ReactElement<{
-            children?: React.ReactNode;
-          }>
-        ).props.children,
+        (header as React.ReactElement<{ children?: React.ReactNode }>).props
+          .children,
         (child: React.ReactNode) => {
           if (!isValidElement(child)) return child;
 
-          // Header.Right 내부에 MenuButton이 있는지 확인
           if (child.type === Header.Right) {
             return cloneElement(
               child,
               {},
               React.Children.map(
-                (
-                  child as React.ReactElement<{
-                    children?: React.ReactNode;
-                  }>
-                ).props.children,
+                (child as React.ReactElement<{ children?: React.ReactNode }>)
+                  .props.children,
                 (rightChild: React.ReactNode) => {
                   if (
                     isValidElement(rightChild) &&
                     rightChild.type === Header.MenuButton
                   ) {
                     return cloneElement(
-                      rightChild as React.ReactElement<
-                        React.JSX.IntrinsicElements["button"]
-                      >,
+                      rightChild as React.ReactElement<{
+                        onClick?: () => void;
+                      }>,
                       {
-                        onClick: () => setModalOpen(true),
+                        onClick: () => setSideOpen(true),
                       },
                     );
                   }
@@ -68,6 +62,35 @@ export function MobileLayout({
     );
   }
 
+  // 메뉴 항목 리스트
+  const menuItems: { label: string; onClick: () => void }[] = [
+    {
+      label: "로그인/회원가입",
+      onClick: () => {
+        setSideOpen(false);
+        setAuthModalOpen(true);
+      },
+    },
+    {
+      label: "내 정보",
+      onClick: () => {
+        /* TODO: 내 정보 기능 */
+      },
+    },
+    {
+      label: "테마",
+      onClick: () => {
+        /* TODO: 테마 기능 */
+      },
+    },
+    {
+      label: "로그아웃",
+      onClick: () => {
+        /* TODO: 로그아웃 기능 */
+      },
+    },
+  ];
+
   return (
     <div className="flex min-h-screen w-full justify-center bg-gray-50">
       <main
@@ -78,31 +101,71 @@ export function MobileLayout({
           {children}
         </div>
         <MobileBottomNavigation />
-        {modalOpen && (
-          <div className="modal-backdrop">
-            <div className="modal-content">
-              <AuthForm onSuccess={() => setModalOpen(false)} />
-              {/* a11y 규칙 준수: button에 type 명시 */}
+
+        {/* 사이드 패널 */}
+        {sideOpen && (
+          <>
+            <button
+              type="button"
+              className="absolute inset-0 bg-black/30 z-40"
+              onClick={() => setSideOpen(false)}
+              onKeyDown={(e) => e.key === "Enter" && setSideOpen(false)}
+              aria-label="배경 닫기"
+            />
+            <aside
+              className="absolute top-0 right-0 h-full w-80 max-w-full bg-white shadow-lg z-50 flex flex-col transition-transform duration-300"
+              style={{
+                transform: sideOpen ? "translateX(0)" : "translateX(100%)",
+              }}
+            >
+              {/* X 닫기 버튼 (우측 상단) */}
               <button
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl font-bold z-10"
+                onClick={() => setSideOpen(false)}
                 type="button"
-                onClick={() => setModalOpen(false)}
-                style={{ marginTop: 12 }}
+                aria-label="닫기"
+              >
+                ×
+              </button>
+              <div className="flex-1 flex flex-col justify-start p-6">
+                {menuItems.map((item) => (
+                  <button
+                    key={item.label}
+                    className="w-full text-left px-4 py-3 rounded hover:bg-gray-100 font-medium text-base"
+                    onClick={item.onClick}
+                    type="button"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+              <button
+                className="text-gray-400 text-sm mb-4"
+                onClick={() => setSideOpen(false)}
+                type="button"
               >
                 닫기
               </button>
+            </aside>
+          </>
+        )}
+
+        {/* 전체 화면 모달: 로그인/회원가입 */}
+        {authModalOpen && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/30">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xs mx-auto relative">
+              <button
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl font-bold"
+                onClick={() => setAuthModalOpen(false)}
+                aria-label="닫기"
+                type="button"
+              >
+                ×
+              </button>
+              <AuthForm onSuccess={() => setAuthModalOpen(false)} />
             </div>
           </div>
         )}
-        <style jsx>{`
-          .modal-backdrop {
-            position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;
-            z-index: 1000;
-          }
-          .modal-content {
-            background: #fff; border-radius: 8px; padding: 24px; min-width: 320px;
-          }
-        `}</style>
       </main>
     </div>
   );
