@@ -1,15 +1,9 @@
-"use client";
-
 import Link from "next/link";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
 import Header from "@/components/ui/header";
 
 export default function BriefingPage() {
-  const handleMenu = () => {
-    alert("메뉴를 열었습니다!");
-  };
-
   return (
     <MobileLayout
       header={
@@ -20,7 +14,7 @@ export default function BriefingPage() {
             </Link>
           </Header.Left>
           <Header.Right>
-            <Header.MenuButton onClick={handleMenu} />
+            <Header.MenuButton />
           </Header.Right>
         </Header>
       }

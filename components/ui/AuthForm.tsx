@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-import supabase from "../../lib/supabaseClient";
+import { toast } from "sonner";
+
+import { createClient } from "../../lib/supabase/client";
+
+const supabase = createClient();
 
 export default function AuthForm({
   onSuccess,
@@ -14,7 +18,6 @@ export default function AuthForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [internalMode, setInternalMode] = useState<"login" | "signup">("login");
-  const [message, setMessage] = useState("");
 
   // mode prop이 있으면 내부 상태를 덮어씀
   useEffect(() => {
@@ -23,7 +26,6 @@ export default function AuthForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage("");
     const currentMode = mode || internalMode;
     if (currentMode === "login") {
       const { error } = await supabase.auth.signInWithPassword({
@@ -31,18 +33,22 @@ export default function AuthForm({
         password,
       });
       if (!error) {
-        setMessage("로그인 성공!");
+        toast.success("로그인 성공!");
         if (onSuccess) onSuccess();
       } else {
-        setMessage(error.message);
+        toast.error(error.message);
       }
     } else {
       const { error } = await supabase.auth.signUp({ email, password });
       if (!error) {
-        setMessage("회원가입 성공! 이메일을 확인하세요.");
+        toast.success("회원가입 성공!", {
+          description:
+            "이메일로 전송된 인증 링크를 클릭하여 계정을 활성화해주세요.",
+          duration: 5000,
+        });
         if (onSuccess) onSuccess();
       } else {
-        setMessage(error.message);
+        toast.error(error.message);
       }
     }
   };
@@ -52,7 +58,7 @@ export default function AuthForm({
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
   };
@@ -62,25 +68,6 @@ export default function AuthForm({
       onSubmit={handleSubmit}
       className="flex flex-col gap-4 w-full max-w-xs mx-auto p-4"
     >
-      {/* 소셜 로그인 버튼 */}
-      <div className="flex flex-col gap-2 my-2">
-        <button
-          type="button"
-          onClick={() => handleSocialLogin("google")}
-          className="w-full bg-white border border-gray-300 rounded py-2 font-semibold flex items-center justify-center gap-2 hover:bg-gray-50"
-        >
-          {/* <img src="/google-icon.svg" alt="Google" className="w-5 h-5" /> */}
-          Google로 로그인
-        </button>
-        <button
-          type="button"
-          onClick={() => handleSocialLogin("kakao")}
-          className="w-full bg-yellow-300 rounded py-2 font-semibold flex items-center justify-center gap-2 hover:bg-yellow-200"
-        >
-          {/* <img src="/kakao-icon.svg" alt="Kakao" className="w-5 h-5" /> */}
-          카카오톡으로 로그인
-        </button>
-      </div>
       <h2 className="text-xl font-bold text-center mb-2">
         {(mode || internalMode) === "login" ? "로그인" : "회원가입"}
       </h2>
@@ -118,14 +105,32 @@ export default function AuthForm({
           {internalMode === "login" ? "회원가입으로" : "로그인으로"}
         </button>
       )}
-      <button
-        type="button"
-        onClick={onSuccess}
-        className="text-gray-400 text-sm mt-2"
-      >
-        닫기
-      </button>
-      {message && <p className="text-center text-red-500 text-sm">{message}</p>}
+
+      {/* 소셜 로그인 버튼 */}
+      <div className="flex justify-center gap-4 mt-4 pt-4 border-t">
+        <button
+          type="button"
+          onClick={() => handleSocialLogin("google")}
+          className="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+        >
+          <img
+            src="/auth/google_logo.webp"
+            alt="Google로 로그인"
+            className="w-6 h-6"
+          />
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSocialLogin("kakao")}
+          className="w-12 h-12 rounded-full bg-[#FEE500] flex items-center justify-center hover:bg-[#FDD835] transition-colors"
+        >
+          <img
+            src="/auth/kakao_logo.png"
+            alt="카카오 로그인"
+            className="w-6 h-6"
+          />
+        </button>
+      </div>
     </form>
   );
 }

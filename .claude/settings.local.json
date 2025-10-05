@@ -1,6 +1,16 @@
 {
   "permissions": {
-    "allow": ["Bash(npm ls:*)", "Bash(npm uninstall:*)", "Bash(pnpm remove:*)"]
+    "allow": [
+      "Bash(npm ls:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(pnpm remove:*)",
+      "Bash(npm install:*)",
+      "Bash(pnpm add:*)",
+      "Read(//Users/froggy/Downloads/signin-assets/**)",
+      "Read(//Users/froggy/Downloads/kakao_login/**)",
+      "Bash(ls:*)",
+      "Read(//Users/froggy/Downloads/**)"
+    ]
   },
   "enabledMcpjsonServers": ["task-master-ai"]
 }
