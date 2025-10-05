@@ -18,10 +18,6 @@ export default function Home() {
     alert("투자 성향 진단을 시작합니다!");
   };
 
-  const handleMenu = () => {
-    alert("메뉴를 열었습니다!");
-  };
-
   return (
     <MobileLayout
       header={
@@ -32,7 +28,7 @@ export default function Home() {
             </Link>
           </Header.Left>
           <Header.Right>
-            <Header.MenuButton onClick={handleMenu} />
+            <Header.MenuButton />
           </Header.Right>
         </Header>
       }
