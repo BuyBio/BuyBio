@@ -66,3 +66,6 @@ node_modules/
 
 
 .claude
+
+# Ignore Excel files in backend/data folder
+backend/data/*.xlsx
