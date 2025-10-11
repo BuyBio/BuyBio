@@ -472,3 +472,71 @@ def analyze_all_survey_types() -> Dict:
     return all_results
 
 
+def get_buy_recommendations_by_type(survey_type: int, limit: int = 10) -> Dict:
+    """
+    특정 설문 유형에서 매수 추천 기업들을 점수 높은 순으로 반환합니다.
+    
+    Args:
+        survey_type: 설문 유형 번호 (1~11)
+        limit: 반환할 기업 수 (기본값: 10)
+        
+    Returns:
+        매수 추천 기업들의 딕셔너리 (점수 높은 순)
+    """
+    # 해당 유형의 모든 기업 분석
+    result = analyze_by_survey_type(survey_type)
+    
+    # 매수 추천만 필터링
+    buy_recommendations = [
+        company for company in result["companies"] 
+        if company["recommendation"] == "매수 추천"
+    ]
+    
+    # 총 점수 기준으로 내림차순 정렬
+    buy_recommendations.sort(key=lambda x: x["scores"]["total"], reverse=True)
+    
+    # limit만큼만 반환
+    top_buy_recommendations = buy_recommendations[:limit]
+    
+    return {
+        "survey_type": survey_type,
+        "buy_recommendations": top_buy_recommendations,
+        "total_buy_count": len(buy_recommendations),
+        "returned_count": len(top_buy_recommendations)
+    }
+
+
+def get_all_buy_recommendations(limit: int = 20) -> Dict:
+    """
+    모든 설문 유형에서 매수 추천 기업들을 점수 높은 순으로 반환합니다.
+    
+    Args:
+        limit: 반환할 기업 수 (기본값: 20)
+        
+    Returns:
+        모든 매수 추천 기업들의 딕셔너리 (점수 높은 순)
+    """
+    all_buy_companies = []
+    
+    # 모든 유형에서 매수 추천 기업들 수집
+    for survey_type in range(1, 12):
+        result = analyze_by_survey_type(survey_type)
+        buy_companies = [
+            company for company in result["companies"] 
+            if company["recommendation"] == "매수 추천"
+        ]
+        all_buy_companies.extend(buy_companies)
+    
+    # 총 점수 기준으로 내림차순 정렬
+    all_buy_companies.sort(key=lambda x: x["scores"]["total"], reverse=True)
+    
+    # limit만큼만 반환
+    top_buy_recommendations = all_buy_companies[:limit]
+    
+    return {
+        "all_buy_recommendations": top_buy_recommendations,
+        "total_buy_count": len(all_buy_companies),
+        "returned_count": len(top_buy_recommendations)
+    }
+
+

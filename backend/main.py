@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from calc_logic import analyze_from_excel, analyze_by_survey_type, analyze_all_survey_types
+from calc_logic import analyze_from_excel, analyze_by_survey_type, analyze_all_survey_types, get_buy_recommendations_by_type, get_all_buy_recommendations
 
 app = FastAPI()
 
@@ -92,6 +92,24 @@ def analyze_all_types():
     """
     results = analyze_all_survey_types()
     return results
+
+
+@app.get("/buy-recommendations-by-type")
+def buy_recommendations_by_type(type: int = Query(..., ge=1, le=11, description="설문 유형 번호 (1~11)"), limit: int = Query(10, ge=1, le=50, description="반환할 기업 수 (1~50)")):
+    """
+    특정 설문 유형에서 매수 추천 기업들을 점수 높은 순으로 반환합니다.
+    """
+    result = get_buy_recommendations_by_type(type, limit)
+    return result
+
+
+@app.get("/all-buy-recommendations")
+def all_buy_recommendations(limit: int = Query(20, ge=1, le=100, description="반환할 기업 수 (1~100)")):
+    """
+    모든 설문 유형에서 매수 추천 기업들을 점수 높은 순으로 반환합니다.
+    """
+    result = get_all_buy_recommendations(limit)
+    return result
 
 if __name__ == "__main__":
     import uvicorn
