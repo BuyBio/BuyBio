@@ -66,6 +66,8 @@ export function calculateMACD(data: number[]): {
     fastPeriod: 12,
     slowPeriod: 26,
     signalPeriod: 9,
+    SimpleMAOscillator: false,
+    SimpleMASignal: false,
   });
 
   return {

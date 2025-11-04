@@ -61,7 +61,7 @@ export async function GET(request: Request) {
           changeSign: change >= 0 ? "1" : "2",
           date: latestData.bstp_nmix_hms,
         },
-        recentData: marketData.slice(-30).map((item) => ({
+        recentData: marketData.slice(-30).map((item: any) => ({
           date: item.bstp_nmix_hms,
           value: parseFloat(item.bstp_nmix_prpr),
           volume: parseInt(item.acml_vol),

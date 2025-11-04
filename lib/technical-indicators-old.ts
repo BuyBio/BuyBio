@@ -56,6 +56,8 @@ export function calculateMACD(
     fastPeriod,
     slowPeriod,
     signalPeriod,
+    SimpleMAOscillator: false,
+    SimpleMASignal: false,
   };
 
   const macd = MACD.calculate(macdInput);

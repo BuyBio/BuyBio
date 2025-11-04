@@ -28,6 +28,10 @@ export async function GET() {
     const analysis = performTechnicalAnalysis(stockData);
     console.log("기술적 분석 완료");
 
+    if (!analysis) {
+      return null;
+    }
+
     console.log("점수 계산 시작...");
     const scoreResult = calculateScore(analysis);
     console.log("점수 계산 완료");
