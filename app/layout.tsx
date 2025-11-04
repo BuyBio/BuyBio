@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
+import SessionProvider from "@/components/providers/SessionProvider";
+
 import { Toaster } from "sonner";
 
 import "./globals.css";
@@ -29,8 +31,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${geistSans.className} antialiased`}>
-        {children}
-        <Toaster position="top-center" richColors />
+        <SessionProvider>
+          {children}
+          <Toaster position="top-center" richColors />
+        </SessionProvider>
       </body>
     </html>
   );

@@ -1,19 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import React, {
-  cloneElement,
-  isValidElement,
-  useEffect,
-  useState,
-} from "react";
+import { useRouter } from "next/navigation";
+import React, { cloneElement, isValidElement, useState } from "react";
 
-import AuthForm from "@/components/ui/AuthForm";
 import Header from "@/components/ui/header";
 import MobileBottomNavigation from "@/components/ui/mobile-bottom-navigation";
-import { createClient } from "@/lib/supabase/client";
 
-import type { User } from "@supabase/supabase-js";
+import { signOut, useSession } from "next-auth/react";
 import { toast } from "sonner";
 
 interface MobileLayoutProps {
@@ -28,33 +22,8 @@ export function MobileLayout({
   header,
 }: MobileLayoutProps) {
   const [sideOpen, setSideOpen] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const supabase = createClient();
-
-  useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
-
-    getUser();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-
-      // OAuth 로그인 성공 시 토스트 표시
-      if (event === "SIGNED_IN" && session?.user) {
-        toast.success("로그인 성공!");
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  const { data: session } = useSession();
+  const router = useRouter();
 
   // Header.MenuButton에 onClick 자동 주입
   let headerWithMenuHandler = header;
@@ -101,7 +70,7 @@ export function MobileLayout({
   }
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await signOut({ callbackUrl: "/" });
     setSideOpen(false);
     toast.success("로그아웃되었습니다");
   };
@@ -144,11 +113,13 @@ export function MobileLayout({
                 </button>
               </div>
               <nav className="space-y-4 p-6">
-                {user ? (
+                {session?.user ? (
                   <>
                     <div className="pb-4 border-b">
                       <p className="text-sm text-gray-500">로그인됨</p>
-                      <p className="font-semibold truncate">{user.email}</p>
+                      <p className="font-semibold truncate">
+                        {session.user.email}
+                      </p>
                     </div>
                     <Link
                       href="/profile"
@@ -170,7 +141,7 @@ export function MobileLayout({
                     type="button"
                     onClick={() => {
                       setSideOpen(false);
-                      setAuthModalOpen(true);
+                      router.push("/auth/signin");
                     }}
                     className="block w-full text-left py-2 hover:text-blue-500"
                   >
@@ -180,23 +151,6 @@ export function MobileLayout({
               </nav>
             </aside>
           </>
-        )}
-
-        {/* 전체 화면 모달: 로그인/회원가입 */}
-        {authModalOpen && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/30">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xs mx-auto relative">
-              <button
-                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-2xl font-bold"
-                onClick={() => setAuthModalOpen(false)}
-                aria-label="닫기"
-                type="button"
-              >
-                ×
-              </button>
-              <AuthForm onSuccess={() => setAuthModalOpen(false)} />
-            </div>
-          </div>
         )}
       </main>
     </div>
