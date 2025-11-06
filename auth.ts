@@ -3,12 +3,19 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Kakao from "next-auth/providers/kakao";
 
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Kakao, Google],
-  adapter: SupabaseAdapter({
-    url: process.env.SUPABASE_URL as string,
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
-  }),
+  ...(supabaseUrl && supabaseServiceRoleKey
+    ? {
+        adapter: SupabaseAdapter({
+          url: supabaseUrl,
+          secret: supabaseServiceRoleKey,
+        }),
+      }
+    : {}),
   callbacks: {
     authorized({ request, auth }) {
       const { pathname } = request.nextUrl;
