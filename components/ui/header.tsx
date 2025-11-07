@@ -7,9 +7,10 @@ interface HeaderProps {
   center?: React.ReactNode;
   right?: React.ReactNode;
   children?: React.ReactNode;
+  className?: string;
 }
 
-const Header = ({ left, center, right, children }: HeaderProps) => {
+const Header = ({ left, center, right, children, className }: HeaderProps) => {
   // If children is provided (compound component pattern)
   if (children) {
     const childrenArray = React.Children.toArray(children);
@@ -24,7 +25,9 @@ const Header = ({ left, center, right, children }: HeaderProps) => {
     );
 
     return (
-      <header className="absolute top-0 left-0 right-0 z-50 flex items-center w-full px-4 py-3 h-13 bg-white">
+      <header
+        className={`absolute top-0 left-0 right-0 z-50 flex items-center w-full px-4 py-3 h-13 bg-white ${className || ""}`}
+      >
         <div className="flex-1 flex justify-start">{leftChild}</div>
         <div className="flex-1 flex justify-center">{centerChild}</div>
         <div className="flex-1 flex justify-end">{rightChild}</div>
@@ -34,7 +37,9 @@ const Header = ({ left, center, right, children }: HeaderProps) => {
 
   // Legacy prop-based layout
   return (
-    <header className="absolute top-0 left-0 right-0 z-50 flex items-center w-full px-4 py-3 h-13 bg-white">
+    <header
+      className={`absolute top-0 left-0 right-0 z-50 flex items-center w-full px-4 py-3 h-13 bg-white ${className || ""}`}
+    >
       <div className="flex-1 flex justify-start">{left}</div>
       <div className="flex-1 flex justify-center">{center}</div>
       <div className="flex-1 flex justify-end">{right}</div>

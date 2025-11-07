@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -18,21 +17,25 @@ export default function BriefingPage() {
       title: "국내 제약사, 글로벌 3상 임박으로 관심 집중",
       source: "연합",
       time: "3분 전",
+      href: "/briefing",
     },
     {
       title: "혁신의료기기 지정 확대… 바이오주 강세",
       source: "머니",
       time: "12분 전",
+      href: "/briefing",
     },
     {
       title: "바이오 ETF, 4거래일 연속 순유입 기록",
       source: "헤럴드",
       time: "35분 전",
+      href: "/briefing",
     },
     {
       title: "항암 신약 후보, 초기 임상서 유의미한 반응",
       source: "이데일리",
       time: "1시간 전",
+      href: "/briefing",
     },
   ];
 
@@ -40,14 +43,17 @@ export default function BriefingPage() {
     {
       title: "임상 단계 한눈에 정리 — 투자 포인트 3가지",
       duration: "08:21",
+      href: "/briefing",
     },
     {
       title: "바이오 섹터 사이클, 지금은 어디?",
       duration: "12:05",
+      href: "/briefing",
     },
     {
       title: "신약 파이프라인 리딩 방법(초심자용)",
       duration: "09:47",
+      href: "/briefing",
     },
   ];
 
@@ -55,24 +61,29 @@ export default function BriefingPage() {
     {
       title: "ADC 기술 트렌드와 주요 기업 비교",
       excerpt: "표적 전달 효율을 끌어올리는 핵심 파라미터를 짚어봅니다.",
+      href: "/briefing",
     },
     {
       title: "CDMO 산업 구조와 수익 레버리지",
       excerpt: "설비 가동률과 마진의 상관관계를 간단한 예시로 설명합니다.",
+      href: "/briefing",
     },
     {
       title: "규제 변화가 임상 일정에 미치는 영향",
       excerpt: "승인 지연/가속 사례를 통해 리스크 관리 포인트 정리.",
+      href: "/briefing",
     },
     {
       title: "바이오 밸류에이션 체크리스트",
       excerpt: "현금 소진률, 파이프라인 단계, 파트너십 등 핵심 항목.",
+      href: "/briefing",
     },
   ];
   return (
     <MobileLayout
+      className="!bg-gray-100"
       header={
-        <Header>
+        <Header className="!bg-gray-100">
           <Header.Left>
             <Link href="/">
               <Header.Title>BUYO</Header.Title>
@@ -111,15 +122,6 @@ export default function BriefingPage() {
                 <div className="text-sm text-green-600">-0.34%</div>
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-2">
-              <Badge className="rounded-full">바이오</Badge>
-              <Badge variant="secondary" className="rounded-full">
-                반도체
-              </Badge>
-              <Badge variant="outline" className="rounded-full">
-                2차전지
-              </Badge>
-            </div>
           </CardContent>
         </Card>
 
@@ -133,12 +135,18 @@ export default function BriefingPage() {
           </CardHeader>
           <CardContent className="pt-2 grid grid-cols-2 gap-3">
             {hotNewsItems.map((n) => (
-              <div key={n.title} className="rounded-xl border p-3">
-                <p className="text-sm font-medium line-clamp-2">{n.title}</p>
+              <Link
+                key={n.title}
+                href={n.href ?? "/briefing"}
+                className="group rounded-xl border border-gray-200/70 bg-white/90 p-3 transition-all duration-150 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white"
+              >
+                <p className="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600">
+                  {n.title}
+                </p>
                 <div className="mt-1 text-[11px] text-gray-500">
                   {n.source} · {n.time}
                 </div>
-              </div>
+              </Link>
             ))}
           </CardContent>
         </Card>
@@ -153,17 +161,23 @@ export default function BriefingPage() {
           </CardHeader>
           <CardContent className="pt-2 grid grid-cols-3 gap-3">
             {videoItems.map((v) => (
-              <div key={v.title} className="space-y-2">
-                <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-200">
+              <Link
+                key={v.title}
+                href={v.href ?? "/briefing"}
+                className="group flex flex-col gap-2 rounded-2xl border border-gray-200/70 bg-white/90 p-2 transition-all duration-150 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white"
+              >
+                <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-200">
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-10 w-10 rounded-full bg-black/70 text-white flex items-center justify-center">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white transition-transform duration-150 group-hover:scale-105">
                       ▶
                     </div>
                   </div>
                 </div>
-                <p className="text-xs font-medium line-clamp-2">{v.title}</p>
+                <p className="text-xs font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600">
+                  {v.title}
+                </p>
                 <p className="text-[11px] text-gray-500">{v.duration}</p>
-              </div>
+              </Link>
             ))}
           </CardContent>
         </Card>
@@ -178,12 +192,19 @@ export default function BriefingPage() {
           </CardHeader>
           <CardContent className="pt-2 space-y-3">
             {columnItems.map((c) => (
-              <div key={c.title} className="rounded-xl border p-3">
-                <p className="text-sm font-medium">{c.title}</p>
+              <Link
+                key={c.title}
+                href={c.href ?? "/briefing"}
+                className="group relative flex flex-col gap-1 rounded-xl border border-gray-200/70 bg-white/90 p-3 pl-5 transition-all duration-150 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white"
+              >
+                <span className="absolute left-3 top-3 h-[calc(100%-1.5rem)] w-0.5 rounded-full bg-gray-200 group-hover:bg-blue-200" />
+                <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600">
+                  {c.title}
+                </p>
                 <p className="mt-1 text-xs text-gray-500 line-clamp-2">
                   {c.excerpt}
                 </p>
-              </div>
+              </Link>
             ))}
           </CardContent>
         </Card>

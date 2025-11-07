@@ -8,32 +8,62 @@ import { MobileLayout } from "@/components/layout/mobile-layout";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/header";
 
-const OPTIONS = [
-  "신약 개발",
-  "점유율 상승",
-  "시장 이벤트",
-  "CDMO",
-  "의료기기",
-  "글로벌 임상",
-  "바이오시밀러",
-  "플랫폼 기술",
-  "해외 수출",
-  "퀀트 신호",
-] as const;
+const OPTIONS: Array<{ keyword: string; description: string }> = [
+  {
+    keyword: "신약 개발",
+    description: "신약 개발 성과를 바탕으로 성장을 노리는 기업",
+  },
+  {
+    keyword: "안정 성장",
+    description: "안정적인 매출을 기반으로 꾸준히 크는 기업",
+  },
+  {
+    keyword: "위탁생산",
+    description: "생산을 맡아 안정적으로 확장하는 기업",
+  },
+  {
+    keyword: "원천기술",
+    description: "기술 가치에 따라 단기 움직임이 큰 기업",
+  },
+  {
+    keyword: "시장 이벤트",
+    description: "시장 이슈와 이벤트에 빠르게 반응하는 기업",
+  },
+  {
+    keyword: "점유율 상승",
+    description: "점유율을 넓혀 빠르게 성장하는 기업",
+  },
+  {
+    keyword: "동물용 시장",
+    description: "동물 관련 특화 시장에 집중하는 기업",
+  },
+  {
+    keyword: "글로벌 임상",
+    description: "해외 임상 수주로 성장 기회를 얻는 기업",
+  },
+  {
+    keyword: "특허·임상",
+    description: "특허와 임상 결과가 중요한 기업",
+  },
+  {
+    keyword: "그룹 확장",
+    description: "그룹 성장과 함께 신사업을 넓히는 기업",
+  },
+];
 
 export default function AssessPersonaPage() {
   const [selected, setSelected] = useState<string[]>([]);
   const router = useRouter();
 
   const canPickMore = selected.length < 3;
-  const isSelected = (opt: string) => selected.includes(opt);
+  const isSelected = (keyword: string) => selected.includes(keyword);
 
-  const toggle = (opt: string) => {
+  const toggle = (keyword: string) => {
     setSelected((prev) => {
-      const exists = prev.includes(opt);
-      if (exists) return prev.filter((v) => v !== opt);
+      const exists = prev.includes(keyword);
+      if (exists) return prev.filter((v) => v !== keyword);
       if (prev.length >= 3) return prev; // guard
-      return [...prev, opt];
+      return [...prev, keyword];
     });
   };
 
@@ -85,13 +115,13 @@ export default function AssessPersonaPage() {
             {/* 카드형 선택 버튼 */}
             <div className="mt-4 grid grid-cols-2 gap-3">
               {OPTIONS.map((opt) => {
-                const active = isSelected(opt);
+                const active = isSelected(opt.keyword);
                 const disabled = !active && !canPickMore;
                 return (
                   <button
-                    key={opt}
+                    key={opt.keyword}
                     type="button"
-                    onClick={() => toggle(opt)}
+                    onClick={() => toggle(opt.keyword)}
                     disabled={disabled}
                     className={[
                       "flex h-[96px] items-center gap-3 rounded-[16px] border p-4 text-left transition-all",
@@ -101,11 +131,13 @@ export default function AssessPersonaPage() {
                       disabled ? "opacity-50 cursor-not-allowed" : "",
                     ].join(" ")}
                   >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[18px] text-blue-500">
-                      •
-                    </div>
-                    <div className="text-[14px] font-semibold leading-5 text-[#2B2F33]">
-                      {opt}
+                    <div className="flex h-full flex-col justify-center">
+                      <span className="text-[12px] font-medium text-blue-500">
+                        {opt.keyword}
+                      </span>
+                      <span className="mt-1 text-[14px] font-semibold leading-5 text-[#2B2F33]">
+                        {opt.description}
+                      </span>
                     </div>
                   </button>
                 );
