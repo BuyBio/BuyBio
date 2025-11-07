@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
@@ -9,13 +10,14 @@ import { PopupCard } from "@/components/ui/popup-card";
 
 export default function Home() {
   const [showPopup, setShowPopup] = useState(true);
+  const router = useRouter();
 
   const handleClose = () => {
     setShowPopup(false);
   };
 
   const handleAction = () => {
-    alert("투자 성향 진단을 시작합니다!");
+    router.push("/explore/assess");
   };
 
   return (
