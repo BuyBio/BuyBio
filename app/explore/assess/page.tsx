@@ -7,49 +7,7 @@ import { useMemo, useState } from "react";
 import { MobileLayout } from "@/components/layout/mobile-layout";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/header";
-
-const OPTIONS: Array<{ keyword: string; description: string }> = [
-  {
-    keyword: "신약 개발",
-    description: "신약 개발 성과를 바탕으로 성장을 노리는 기업",
-  },
-  {
-    keyword: "안정 성장",
-    description: "안정적인 매출을 기반으로 꾸준히 크는 기업",
-  },
-  {
-    keyword: "위탁생산",
-    description: "생산을 맡아 안정적으로 확장하는 기업",
-  },
-  {
-    keyword: "원천기술",
-    description: "기술 가치에 따라 단기 움직임이 큰 기업",
-  },
-  {
-    keyword: "시장 이벤트",
-    description: "시장 이슈와 이벤트에 빠르게 반응하는 기업",
-  },
-  {
-    keyword: "점유율 상승",
-    description: "점유율을 넓혀 빠르게 성장하는 기업",
-  },
-  {
-    keyword: "동물용 시장",
-    description: "동물 관련 특화 시장에 집중하는 기업",
-  },
-  {
-    keyword: "글로벌 임상",
-    description: "해외 임상 수주로 성장 기회를 얻는 기업",
-  },
-  {
-    keyword: "특허·임상",
-    description: "특허와 임상 결과가 중요한 기업",
-  },
-  {
-    keyword: "그룹 확장",
-    description: "그룹 성장과 함께 신사업을 넓히는 기업",
-  },
-];
+import { INVESTMENT_OPTIONS } from "@/lib/constants/investment-preferences";
 
 export default function AssessPersonaPage() {
   const [selected, setSelected] = useState<string[]>([]);
@@ -114,7 +72,7 @@ export default function AssessPersonaPage() {
 
             {/* 카드형 선택 버튼 */}
             <div className="mt-4 grid grid-cols-2 gap-3">
-              {OPTIONS.map((opt) => {
+              {INVESTMENT_OPTIONS.map((opt) => {
                 const active = isSelected(opt.keyword);
                 const disabled = !active && !canPickMore;
                 return (
