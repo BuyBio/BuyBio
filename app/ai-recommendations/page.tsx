@@ -92,31 +92,44 @@ export default function AIRecommendationsPage() {
   });
 
   useEffect(() => {
-    // localStorage에서 선택한 키워드 가져오기
     const loadRecommendations = async () => {
       try {
-        const raw = localStorage.getItem("buyo.assess.selected");
-        if (!raw) {
-          // 키워드가 없으면 기본 데이터 사용
-          setSections(getDefaultSections());
-          setLoading(false);
-          return;
+        let keywords: string[] | null = null;
+
+        try {
+          const profileResponse = await fetch("/api/investment-profile");
+          if (profileResponse.ok) {
+            const profilePayload = await profileResponse.json();
+            const selections = profilePayload?.profile?.selections;
+            if (Array.isArray(selections) && selections.length > 0) {
+              keywords = selections;
+              localStorage.setItem(
+                "buyo.assess.selected",
+                JSON.stringify(selections),
+              );
+            }
+          }
+        } catch {
+          // 무시하고 로컬 스토리지 사용
         }
 
-        const keywords = JSON.parse(raw) as string[];
+        if (!keywords) {
+          const raw = localStorage.getItem("buyo.assess.selected");
+          if (raw) {
+            keywords = JSON.parse(raw);
+          }
+        }
+
         if (!keywords || keywords.length === 0) {
           setSections(getDefaultSections());
-          setLoading(false);
           return;
         }
 
-        // 선택한 키워드로 태그 업데이트
         setPersona((prev) => ({
           ...prev,
-          tags: keywords.join(" · "),
+          tags: keywords!.join(" · "),
         }));
 
-        // API 호출
         const response = await fetch("/api/recommendations", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -127,7 +140,6 @@ export default function AIRecommendationsPage() {
           const data = await response.json();
           setSections(data);
         } else {
-          // API 실패 시 기본 데이터 사용
           setSections(getDefaultSections());
         }
       } catch (error) {
