@@ -1,38 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/ui/header";
+import { Progress } from "@/components/ui/progress";
 import { INVESTMENT_OPTIONS } from "@/lib/constants/investment-preferences";
+import { cn } from "@/lib/utils";
 
 export default function AssessPersonaPage() {
-  const [selected, setSelected] = useState<string[]>([]);
-  const router = useRouter();
+  const [selectedKeyword, setSelectKeyword] = useState<string[]>([]);
+  const isCanPickMore = selectedKeyword.length < 3;
+  const isSelectKeyword = (keyword: string) =>
+    selectedKeyword.includes(keyword);
 
-  const canPickMore = selected.length < 3;
-  const isSelected = (keyword: string) => selected.includes(keyword);
+  const handleToggle = (keyword: string) => {
+    if (!isSelectKeyword(keyword) && !isCanPickMore) return;
 
-  const toggle = (keyword: string) => {
-    setSelected((prev) => {
-      const exists = prev.includes(keyword);
-      if (exists) return prev.filter((v) => v !== keyword);
-      if (prev.length >= 3) return prev; // guard
-      return [...prev, keyword];
-    });
+    if (isSelectKeyword(keyword)) {
+      return setSelectKeyword((prev) => prev.filter((v) => v !== keyword));
+    }
+
+    setSelectKeyword((prev) => [...prev, keyword]);
   };
-
-  const subtitle = useMemo(() => {
-    if (selected.length === 0) return "투자 스타일을 세 가지 골라주세요";
-    if (selected.length < 3) return `${3 - selected.length}개 남았어요`;
-    return "3개 선택 완료";
-  }, [selected.length]);
 
   return (
     <MobileLayout
+      className="relative"
       header={
         <Header>
           <Header.Left>
@@ -46,102 +43,107 @@ export default function AssessPersonaPage() {
         </Header>
       }
     >
-      <div className="flex max-h-[100dvh] min-h-[100dvh] flex-col p-4">
-        <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-[420px]">
-            {/* 진행바 */}
-            <div className="mt-2 flex items-center gap-2 px-1">
-              <div className="h-1.5 w-full rounded bg-[#EEF0F2]">
-                <div
-                  className="h-1.5 rounded bg-blue-500"
-                  style={{ width: `${(selected.length / 3) * 100}%` }}
-                />
-              </div>
-              <span className="text-[12px] text-[#9FA4A6]">
-                {selected.length}/3 선택
-              </span>
-            </div>
+      <div className="flex flex-col p-4">
+        <div className="mx-auto max-w-[420px] flex flex-col gap-4">
+          {/* 진행바 */}
+          <div className="sticky top-4 flex gap-3 items-center bg-white/50">
+            <Progress
+              value={Math.floor(selectedKeyword.length * 33)}
+              className="rounded-full bg-gray-200 h-1"
+            />
+            <span className="font-semibold text-gray-400 text-sm text-nowrap">
+              {selectedKeyword.length}/3 선택
+            </span>
+          </div>
 
-            {/* 타이틀 */}
-            <div className="mt-4 px-1">
-              <h1 className="text-[22px] font-bold tracking-[-0.3px]">
-                평소에 어떻게 투자하시나요?
-              </h1>
-              <p className="mt-1 text-[13px] text-[#9FA4A6]">{subtitle}</p>
-            </div>
+          {/* 타이틀 */}
+          <div className="flex flex-col justify-center items-center">
+            <h1 className="text-[22px] font-bold tracking-[-0.3px]">
+              평소에 어떻게 투자하시나요?
+            </h1>
+            <span className="text-gray-400 font-semibold text-sm">
+              투자 스타일을 세 가지 골라주세요
+            </span>
+          </div>
 
-            {/* 카드형 선택 버튼 */}
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              {INVESTMENT_OPTIONS.map((opt) => {
-                const active = isSelected(opt.keyword);
-                const disabled = !active && !canPickMore;
-                return (
-                  <button
-                    key={opt.keyword}
-                    type="button"
-                    onClick={() => toggle(opt.keyword)}
-                    disabled={disabled}
-                    className={[
-                      "flex h-[96px] items-center gap-3 rounded-[16px] border p-4 text-left transition-all",
-                      active
-                        ? "border-blue-500 bg-blue-50 shadow-[0_0_0_1px_rgba(59,130,246,0.15)]"
-                        : "border-[#EEF0F2] bg-[#F4F7FB] hover:bg-[#EFF3F9]",
-                      disabled ? "opacity-50 cursor-not-allowed" : "",
-                    ].join(" ")}
-                  >
-                    <div className="flex h-full flex-col justify-center">
-                      <span className="text-[12px] font-medium text-blue-500">
-                        {opt.keyword}
-                      </span>
-                      <span className="mt-1 text-[14px] font-semibold leading-5 text-[#2B2F33]">
-                        {opt.description}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+          {/* 카드형 선택 버튼 */}
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {INVESTMENT_OPTIONS.map((opt) => {
+              const active = isSelectKeyword(opt.keyword);
+              const disabled = !active && !isCanPickMore;
+              const cardClasses = cn(
+                "h-[96px] cursor-pointer rounded-[16px] border transition-all",
+                active
+                  ? "border-blue-500 bg-blue-50"
+                  : "bg-gray-50 hover:bg-gray-100 shadow-md",
+                disabled ? "cursor-not-allowed opacity-50" : "",
+              );
 
-            {/* 남은 개수 인디케이터 */}
-            <div className="my-6 flex items-center justify-center">
-              <div className="flex items-center gap-2 rounded-full bg-[#F4F7FB] px-4 py-2 text-[14px] text-[#5B5F61]">
-                <span
-                  className={`h-2 w-2 rounded-full ${selected.length >= 1 ? "bg-blue-500" : "bg-[#D5D9DE]"}`}
-                />
-                <span
-                  className={`h-2 w-2 rounded-full ${selected.length >= 2 ? "bg-blue-500" : "bg-[#D5D9DE]"}`}
-                />
-                <span
-                  className={`h-2 w-2 rounded-full ${selected.length >= 3 ? "bg-blue-500" : "bg-[#D5D9DE]"}`}
-                />
-                <span className="ml-2">{subtitle}</span>
-              </div>
-            </div>
+              return (
+                <Card
+                  key={opt.keyword}
+                  tabIndex={disabled ? -1 : 0}
+                  aria-pressed={active}
+                  aria-disabled={disabled}
+                  onClick={() => handleToggle(opt.keyword)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      handleToggle(opt.keyword);
+                    }
+                  }}
+                  className={cardClasses}
+                >
+                  <CardContent className="flex h-full flex-col justify-center gap-1 p-4 text-left">
+                    <span className="text-xs font-medium text-blue-500">
+                      {opt.keyword}
+                    </span>
+                    <span className="text-sm font-semibold leading-5 text-[#2B2F33]">
+                      {opt.description}
+                    </span>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
+      </div>
 
-        {/* 하단 버튼 */}
-        <div className="sticky bottom-0 mt-2 grid grid-cols-2 gap-2 bg-white pb-2 pt-1">
-          <Button variant="outline" onClick={() => setSelected([])}>
-            건너뛰기
-          </Button>
-          <Button
-            disabled={selected.length !== 3}
-            onClick={() => {
-              try {
-                if (typeof window !== "undefined") {
-                  localStorage.setItem(
-                    "buyo.assess.selected",
-                    JSON.stringify(selected),
-                  );
-                }
-              } catch {}
-              router.push("/explore/assess/result");
-            }}
-          >
-            다음으로
-          </Button>
-        </div>
+      {/* 하단 버튼 */}
+      <div className="sticky bottom-[10px] flex flex-col px-4 gap-3">
+        <Button variant={"outline"} className="bg-gray-100" onClick={() => {}}>
+          {isCanPickMore ? (
+            <div className="flex w-full justify-center gap-2">
+              <div className="flex items-center gap-2 text-xs font-semibold text-white/80">
+                <div className="flex items-center gap-1">
+                  {[0, 1, 2].map((idx) => (
+                    <span
+                      key={idx}
+                      className={cn(
+                        "h-1.5 w-1.5 rounded-full",
+                        selectedKeyword.length > idx
+                          ? "bg-primary"
+                          : "bg-gray-300",
+                      )}
+                    />
+                  ))}
+                </div>
+              </div>
+              <span className="text-normal">
+                {selectedKeyword.length}개 남았어요.
+              </span>
+            </div>
+          ) : (
+            <span>분석하기</span>
+          )}
+        </Button>
+        <Button
+          className="p-4"
+          variant="outline"
+          onClick={() => setSelectKeyword([])}
+        >
+          건너뛰기
+        </Button>
       </div>
     </MobileLayout>
   );
