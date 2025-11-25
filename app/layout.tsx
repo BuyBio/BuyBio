@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import SessionProvider from "@/components/providers/SessionProvider";
 
 import { Toaster } from "sonner";
@@ -29,12 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <body className={`${geistSans.className} antialiased`}>
-        <SessionProvider>
-          {children}
-          <Toaster position="top-center" richColors />
-        </SessionProvider>
+        <QueryProvider>
+          <SessionProvider>
+            {children}
+            <Toaster position="bottom-right" richColors />
+          </SessionProvider>
+        </QueryProvider>
       </body>
     </html>
   );

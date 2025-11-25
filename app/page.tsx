@@ -2,23 +2,75 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
 import Header from "@/components/ui/header";
 import { PopupCard } from "@/components/ui/popup-card";
 
+import { useSession } from "next-auth/react";
+
+interface InvestmentProfile {
+  selections: string[];
+  updatedAt?: string;
+}
+
 export default function Home() {
   const [showPopup, setShowPopup] = useState(true);
+  const [profile, setProfile] = useState<InvestmentProfile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
   const router = useRouter();
+  const { status } = useSession();
+
+  useEffect(() => {
+    if (status !== "authenticated") {
+      setProfile(null);
+      return;
+    }
+
+    let active = true;
+    const fetchProfile = async () => {
+      setProfileLoading(true);
+      try {
+        const response = await fetch("/api/investment-profile");
+        if (!response.ok) {
+          if (response.status === 404 || response.status === 401) {
+            if (active) setProfile(null);
+            return;
+          }
+          throw new Error("failed to fetch");
+        }
+        const data = await response.json();
+        if (active) {
+          setProfile(data.profile);
+        }
+      } catch (error) {
+        console.error("투자 성향 불러오기 실패:", error);
+        if (active) {
+          setProfile(null);
+        }
+      } finally {
+        if (active) {
+          setProfileLoading(false);
+        }
+      }
+    };
+
+    fetchProfile();
+    return () => {
+      active = false;
+    };
+  }, [status]);
 
   const handleClose = () => {
     setShowPopup(false);
   };
 
   const handleAction = () => {
-    router.push("/explore/assess");
+    router.push("/persona");
   };
+
+  const hasProfile = !!profile?.selections?.length;
 
   return (
     <MobileLayout
@@ -40,15 +92,17 @@ export default function Home() {
           <p className="text-gray-500 text-center">BuyBio App</p>
 
           {/* Popup Card Example */}
-          {showPopup && (
+          {!hasProfile && showPopup && (
             <div className="w-full">
               <PopupCard onClose={handleClose} onAction={handleAction} />
             </div>
           )}
 
-          {!showPopup && (
+          {!hasProfile && !showPopup && (
             <div className="text-center">
-              <p className="text-sm text-gray-400 mb-2">팝업이 닫혔습니다</p>
+              <p className="text-sm text-gray-400 mb-2">
+                투자 성향 팝업이 닫혔습니다
+              </p>
               <button
                 type="button"
                 onClick={() => setShowPopup(true)}
