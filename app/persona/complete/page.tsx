@@ -14,8 +14,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Header from "@/components/ui/header";
+import { getInvestmentOption } from "@/constants/investment-preferences";
 import { useInvestmentProfileQuery } from "@/hooks/useInvestmentProfile";
-import { getInvestmentOption } from "@/lib/constants/investment-preferences";
 
 import dayjs from "dayjs";
 import { match, P } from "ts-pattern";

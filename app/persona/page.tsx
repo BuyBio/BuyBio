@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/ui/header";
 import { Progress } from "@/components/ui/progress";
+import { INVESTMENT_OPTIONS } from "@/constants/investment-preferences";
 import { useSaveInvestmentProfileMutation } from "@/hooks/useInvestmentProfile";
-import { INVESTMENT_OPTIONS } from "@/lib/constants/investment-preferences";
 import { cn } from "@/lib/utils";
 
 import { toast } from "sonner";
@@ -73,7 +73,7 @@ export default function AssessPersonaPage() {
               {/* 진행바 */}
               <div className="sticky top-4 flex gap-3 items-center bg-white/50">
                 <Progress
-                  value={Math.floor(selectedKeyword.length * 33)}
+                  value={Math.floor((selectedKeyword.length / 3) * 100)}
                   className="rounded-full bg-gray-200 h-1"
                 />
                 <span className="font-semibold text-gray-400 text-sm text-nowrap">

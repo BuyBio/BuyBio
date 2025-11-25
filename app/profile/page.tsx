@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
 import Header from "@/components/ui/header";
-import { getInvestmentOption } from "@/lib/constants/investment-preferences";
+import { getInvestmentOption } from "@/constants/investment-preferences";
 
 import { signOut, useSession } from "next-auth/react";
 import { IoPersonCircle } from "react-icons/io5";
