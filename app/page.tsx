@@ -67,7 +67,7 @@ export default function Home() {
   };
 
   const handleAction = () => {
-    router.push("/explore/assess");
+    router.push("/persona");
   };
 
   const hasProfile = !!profile?.selections?.length;

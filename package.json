@@ -19,6 +19,8 @@
     "axios": "^1.12.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.19",
+    "es-toolkit": "^1.42.0",
     "kis-typescript-sdk": "^0.0.5",
     "lucide-react": "^0.511.0",
     "next": "latest",
@@ -31,6 +33,7 @@
     "supabase-mcp": "^1.5.0",
     "tailwind-merge": "^3.3.0",
     "technicalindicators": "^3.1.0",
+    "ts-pattern": "^5.9.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

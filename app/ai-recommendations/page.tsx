@@ -1,12 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/ui/header";
+import { useInvestmentProfileQuery } from "@/hooks/useInvestmentProfile";
+import { apiClient } from "@/lib/api-client";
+
+import { useQuery } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 
 interface Company {
   name: string;
@@ -20,6 +26,13 @@ interface KeywordSection {
   desc: string;
   companies: Company[];
 }
+
+const PERSONA_DEFAULT = {
+  summary: "성장과 기회를 보되, 과도한 변동은 줄이는 성향",
+  strength: "고성장 구간을 빠르게 포착해요",
+  caution: "이벤트성 급등·급락에 흔들릴 수 있어요",
+  tags: "신약 개발 · 안정 성장 · 위탁생산",
+};
 
 // 기본 데이터 (API 실패 시 사용)
 function getDefaultSections(): KeywordSection[] {
@@ -82,76 +95,57 @@ function getDefaultSections(): KeywordSection[] {
 }
 
 export default function AIRecommendationsPage() {
-  const [sections, setSections] = useState<KeywordSection[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [persona, setPersona] = useState({
-    summary: "성장과 기회를 보되, 과도한 변동은 줄이는 성향",
-    strength: "고성장 구간을 빠르게 포착해요",
-    caution: "이벤트성 급등·급락에 흔들릴 수 있어요",
-    tags: "신약 개발 · 안정 성장 · 위탁생산",
+  const router = useRouter();
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useInvestmentProfileQuery();
+
+  const keywords = profile?.selections ?? [];
+  const shouldFetchRecommendations = keywords.length > 0;
+
+  const {
+    data: recommendations,
+    isLoading: recommendationsLoading,
+    error: recommendationsError,
+    refetch: refetchRecommendations,
+    isFetching: recommendationsFetching,
+  } = useQuery({
+    queryKey: ["recommendations", keywords.join("|")],
+    queryFn: async () => {
+      const response = await apiClient.post<KeywordSection[]>(
+        "/api/recommendations",
+        { keywords },
+      );
+      return response.data;
+    },
+    enabled: shouldFetchRecommendations,
+    staleTime: 1000 * 60 * 5,
   });
 
-  useEffect(() => {
-    const loadRecommendations = async () => {
-      try {
-        let keywords: string[] | null = null;
+  const persona = useMemo(
+    () => ({
+      ...PERSONA_DEFAULT,
+      tags: keywords.length > 0 ? keywords.join(" · ") : PERSONA_DEFAULT.tags,
+    }),
+    [keywords],
+  );
 
-        try {
-          const profileResponse = await fetch("/api/investment-profile");
-          if (profileResponse.ok) {
-            const profilePayload = await profileResponse.json();
-            const selections = profilePayload?.profile?.selections;
-            if (Array.isArray(selections) && selections.length > 0) {
-              keywords = selections;
-              localStorage.setItem(
-                "buyo.assess.selected",
-                JSON.stringify(selections),
-              );
-            }
-          }
-        } catch {
-          // 무시하고 로컬 스토리지 사용
-        }
+  const unauthorized =
+    isAxiosError(profileError) && profileError.response?.status === 401;
+  const noProfileSelections =
+    !profileLoading && !profileError && keywords.length === 0;
+  const showRecommendationsError =
+    recommendationsError && !recommendationsLoading;
 
-        if (!keywords) {
-          const raw = localStorage.getItem("buyo.assess.selected");
-          if (raw) {
-            keywords = JSON.parse(raw);
-          }
-        }
+  const displaySections =
+    shouldFetchRecommendations && recommendations?.length
+      ? recommendations
+      : getDefaultSections();
 
-        if (!keywords || keywords.length === 0) {
-          setSections(getDefaultSections());
-          return;
-        }
-
-        setPersona((prev) => ({
-          ...prev,
-          tags: keywords!.join(" · "),
-        }));
-
-        const response = await fetch("/api/recommendations", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ keywords }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setSections(data);
-        } else {
-          setSections(getDefaultSections());
-        }
-      } catch (error) {
-        console.error("추천 로드 오류:", error);
-        setSections(getDefaultSections());
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadRecommendations();
-  }, []);
+  const showLoading =
+    profileLoading || (shouldFetchRecommendations && recommendationsLoading);
 
   const columns = [
     {
@@ -204,7 +198,7 @@ export default function AIRecommendationsPage() {
             <div className="mt-1 text-[13px] text-blue-600">{persona.tags}</div>
             <div className="mt-3 space-y-2">
               <div className="flex items-start gap-2">
-                <span className="text-[14px] font-semibold text-[#9BBE18]">
+                <span className="text-[14px] font-semibold text-primary">
                   요약
                 </span>
                 <span className="text-[14px] text-[#5B5F61]">
@@ -212,7 +206,7 @@ export default function AIRecommendationsPage() {
                 </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-[14px] font-semibold text-[#9BBE18]">
+                <span className="text-[14px] font-semibold text-primary">
                   강점
                 </span>
                 <span className="text-[14px] text-[#5B5F61]">
@@ -220,7 +214,7 @@ export default function AIRecommendationsPage() {
                 </span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-[14px] font-semibold text-[#9BBE18]">
+                <span className="text-[14px] font-semibold text-primary">
                   주의
                 </span>
                 <span className="text-[14px] text-[#5B5F61]">
@@ -234,7 +228,7 @@ export default function AIRecommendationsPage() {
                 size="sm"
                 className="h-[28px] text-[#9FA4A6]"
                 onClick={() => {
-                  window.location.href = "/explore/assess";
+                  router.push("/persona");
                 }}
               >
                 다시 진단하기
@@ -242,6 +236,54 @@ export default function AIRecommendationsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {unauthorized && (
+          <div className="rounded-2xl bg-white/80 p-4 text-[13px] text-red-600 shadow-sm">
+            로그인 후에 나만의 AI 추천이 활성화돼요.
+            <div className="mt-3 flex gap-2">
+              <Button
+                className="flex-1"
+                onClick={() =>
+                  router.push("/auth/signin?callbackUrl=/ai-recommendations")
+                }
+              >
+                로그인하기
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {!unauthorized && noProfileSelections && (
+          <div className="rounded-2xl bg-white/80 p-4 text-[13px] text-[#5B5F61] shadow-sm">
+            아직 저장된 투자 성향이 없어요. 3개의 키워드를 고르면 추천 품질이
+            훨씬 좋아져요.
+            <div className="mt-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push("/persona")}
+              >
+                성향 진단하러 가기
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {showRecommendationsError && (
+          <div className="rounded-2xl bg-white/80 p-4 text-[13px] text-amber-700 shadow-sm">
+            추천 데이터를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.
+            <div className="mt-3 flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refetchRecommendations()}
+                disabled={recommendationsFetching}
+              >
+                {recommendationsFetching ? "불러오는 중..." : "다시 불러오기"}
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* 맞춤 종목 추천 타이틀 */}
         <div>
@@ -254,11 +296,33 @@ export default function AIRecommendationsPage() {
         </div>
 
         {/* 맞춤 종목 추천 섹션들 */}
-        {loading ? (
-          <div className="text-center py-8 text-gray-500">로딩 중...</div>
+        {showLoading ? (
+          <div className="space-y-4">
+            {[0, 1].map((idx) => (
+              <Card key={idx} className="shadow-sm">
+                <CardContent className="space-y-4 p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <div className="h-4 w-32 rounded bg-gray-200" />
+                      <div className="h-3 w-48 rounded bg-gray-100" />
+                    </div>
+                    <div className="h-4 w-16 rounded bg-gray-200" />
+                  </div>
+                  <div className="flex gap-2">
+                    {[0, 1].map((chip) => (
+                      <div
+                        key={chip}
+                        className="h-[120px] flex-1 rounded-2xl bg-gray-100"
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         ) : (
           <div className="space-y-5">
-            {sections.map((sec) => (
+            {displaySections.map((sec) => (
               <Card key={sec.keyword} className="shadow-sm">
                 <CardContent className="p-4 space-y-3">
                   <div className="flex items-center justify-between">

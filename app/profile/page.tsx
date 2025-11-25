@@ -243,7 +243,7 @@ export default function ProfilePage() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => router.push("/explore/assess")}
+                  onClick={() => router.push("/persona")}
                   className="mt-4 w-full rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
                 >
                   투자 성향 진단하러 가기
