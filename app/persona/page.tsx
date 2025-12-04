@@ -16,11 +16,17 @@ import { cn } from "@/lib/utils";
 
 import { toast } from "sonner";
 
+const MIN_SELECTIONS = 2;
+const MAX_SELECTIONS = 3;
+const PROGRESS_DOT_KEYS = ["first", "second", "third"] as const;
+
 export default function AssessPersonaPage() {
   const router = useRouter();
   const [selectedKeyword, setSelectKeyword] = useState<string[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const isCanPickMore = selectedKeyword.length < 3;
+  const selectionsCount = selectedKeyword.length;
+  const isCanPickMore = selectionsCount < MAX_SELECTIONS;
+  const hasMinimumSelections = selectionsCount >= MIN_SELECTIONS;
   const isSelectKeyword = (keyword: string) =>
     selectedKeyword.includes(keyword);
 
@@ -37,6 +43,11 @@ export default function AssessPersonaPage() {
   };
 
   const handleSubmit = async () => {
+    if (!hasMinimumSelections) {
+      toast.error(`최소 ${MIN_SELECTIONS}가지는 골라주세요.`);
+      return;
+    }
+
     try {
       setIsAnalyzing(true);
       await mutateAsync(selectedKeyword);
@@ -73,11 +84,11 @@ export default function AssessPersonaPage() {
               {/* 진행바 */}
               <div className="sticky top-4 flex gap-3 items-center bg-white/50">
                 <Progress
-                  value={Math.floor((selectedKeyword.length / 3) * 100)}
+                  value={Math.floor((selectionsCount / MAX_SELECTIONS) * 100)}
                   className="rounded-full bg-gray-200 h-1"
                 />
                 <span className="font-semibold text-gray-400 text-sm text-nowrap">
-                  {selectedKeyword.length}/3 선택
+                  {selectionsCount}/{MAX_SELECTIONS} 선택
                 </span>
               </div>
 
@@ -87,7 +98,7 @@ export default function AssessPersonaPage() {
                   평소에 어떻게 투자하시나요?
                 </h1>
                 <span className="text-gray-400 font-semibold text-sm">
-                  투자 스타일을 세 가지 골라주세요
+                  최소 2개, 최대 3개의 투자 스타일을 골라주세요
                 </span>
               </div>
 
@@ -138,19 +149,19 @@ export default function AssessPersonaPage() {
             <Button
               variant={"outline"}
               className="bg-gray-100 !disabled:bg-gray-200 !disabled:cursor-not-allowed"
-              disabled={isCanPickMore}
+              disabled={!hasMinimumSelections || isAnalyzing || isPending}
               onClick={handleSubmit}
             >
-              {isCanPickMore ? (
+              {!hasMinimumSelections ? (
                 <div className="flex w-full justify-center gap-2">
                   <div className="flex items-center gap-2 text-xs font-semibold text-white/80">
                     <div className="flex items-center gap-1">
-                      {[0, 1, 2].map((idx) => (
+                      {PROGRESS_DOT_KEYS.map((dotKey, idx) => (
                         <span
-                          key={idx}
+                          key={dotKey}
                           className={cn(
                             "h-1.5 w-1.5 rounded-full",
-                            selectedKeyword.length > idx
+                            selectionsCount > idx
                               ? "bg-primary"
                               : "bg-gray-300",
                           )}
@@ -159,11 +170,11 @@ export default function AssessPersonaPage() {
                     </div>
                   </div>
                   <span className="text-normal">
-                    {selectedKeyword.length}개 남았어요.
+                    {MIN_SELECTIONS - selectionsCount}개 남았어요.
                   </span>
                 </div>
               ) : (
-                <span>분석하기</span>
+                <span>{isPending ? "분석 중..." : "분석하기"}</span>
               )}
             </Button>
             <Button

@@ -7,6 +7,8 @@ import { auth } from "@/auth";
 import { supabaseAdminClient } from "@/lib/supabase/admin";
 
 const TABLE_NAME = "investment_profiles";
+const MIN_SELECTIONS = 2;
+const MAX_SELECTIONS = 3;
 
 export async function GET() {
   const session = await auth();
@@ -16,7 +18,7 @@ export async function GET() {
 
   const supabase = supabaseAdminClient;
   const requestHeaders = await headers();
-  const supabaseHeaders = requestHeaders.get("x-supabase-client");
+  const _supabaseHeaders = requestHeaders.get("x-supabase-client");
 
   const { data, error } = await supabase
     .from(TABLE_NAME)
@@ -61,16 +63,31 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const selections = body?.selections;
 
-  if (!Array.isArray(selections) || selections.length === 0) {
+  if (
+    !Array.isArray(selections) ||
+    selections.length < MIN_SELECTIONS ||
+    selections.length > MAX_SELECTIONS
+  ) {
     return NextResponse.json(
-      { error: "선택한 투자 성향이 필요합니다." },
+      {
+        error: `투자 성향은 최소 ${MIN_SELECTIONS}개, 최대 ${MAX_SELECTIONS}개까지 선택해야 합니다.`,
+      },
+      { status: 400 },
+    );
+  }
+
+  const normalizedSelections = Array.from(new Set(selections));
+
+  if (normalizedSelections.length < MIN_SELECTIONS) {
+    return NextResponse.json(
+      { error: "중복 없이 최소 2개 이상의 성향을 선택해주세요." },
       { status: 400 },
     );
   }
 
   const payload = {
     user_id: session.user.id,
-    selections,
+    selections: normalizedSelections,
   };
 
   const supabase = supabaseAdminClient;
