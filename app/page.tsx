@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { MobileLayout } from "@/components/layout/mobile-layout";
 import Header from "@/components/ui/header";
 import { PopupCard } from "@/components/ui/popup-card";
+import { StockTickerCard } from "@/components/ui/stock-ticker-card";
 
 import { useSession } from "next-auth/react";
 
@@ -18,7 +19,7 @@ interface InvestmentProfile {
 export default function Home() {
   const [showPopup, setShowPopup] = useState(true);
   const [profile, setProfile] = useState<InvestmentProfile | null>(null);
-  const [profileLoading, setProfileLoading] = useState(false);
+
   const router = useRouter();
   const { status } = useSession();
 
@@ -30,7 +31,6 @@ export default function Home() {
 
     let active = true;
     const fetchProfile = async () => {
-      setProfileLoading(true);
       try {
         const response = await fetch("/api/investment-profile");
         if (!response.ok) {
@@ -50,9 +50,6 @@ export default function Home() {
           setProfile(null);
         }
       } finally {
-        if (active) {
-          setProfileLoading(false);
-        }
       }
     };
 
@@ -89,6 +86,24 @@ export default function Home() {
     >
       <div className="flex items-center justify-center min-h-full">
         <div className="w-full p-4 space-y-4">
+          <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500">
+                  실시간 대표 종목
+                </p>
+              </div>
+              <span className="text-[10px] uppercase text-slate-400">
+                ws://3.26.94.208:8080
+              </span>
+            </div>
+            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <StockTickerCard symbol="005930" label="삼성전자" />
+              <StockTickerCard symbol="000660" label="SK하이닉스" />
+              <StockTickerCard symbol="035420" label="NAVER" />
+            </div>
+          </section>
+
           <p className="text-gray-500 text-center">BuyBio App</p>
 
           {/* Popup Card Example */}
