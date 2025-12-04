@@ -100,6 +100,13 @@ export default function Home() {
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
               <StockTickerCard symbol="005930" label="삼성전자" />
               <StockTickerCard symbol="000660" label="SK하이닉스" />
+              <StockTickerCard symbol="034020" label="두산에너빌리티" />
+              <StockTickerCard symbol="298380" label="에이비엘바이오" />
+              <StockTickerCard symbol="000650" label="천일고속" />
+              <StockTickerCard symbol="066570" label="LG전자" />
+              <StockTickerCard symbol="005380" label="현대자동차" />
+              <StockTickerCard symbol="0009K0" label="에임드바이오" />
+              <StockTickerCard symbol="064400" label="LG씨엔에스" />
               <StockTickerCard symbol="035420" label="NAVER" />
             </div>
           </section>

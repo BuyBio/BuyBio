@@ -38,6 +38,7 @@ class StockRealtimeClient {
   private connectionState: ConnectionState = "idle";
   private stateListeners = new Set<(state: ConnectionState) => void>();
   private lastError: string | null = null;
+  private isCreatingClient = false;
 
   public subscribe(symbol: string, handler: StockRealtimeHandler): () => void {
     const normalizedSymbol = this.normalizeSymbol(symbol);
@@ -100,12 +101,48 @@ class StockRealtimeClient {
     };
   }
 
-  private ensureClient() {
-    if (this.client || typeof window === "undefined") {
-      if (this.client && !this.client.active && this.subscriptions.size > 0) {
+  private ensureClient(): void {
+    // 이미 클라이언트가 있고 활성화되어 있으면 재생성하지 않음
+    if (this.client?.active) {
+      return;
+    }
+
+    // 클라이언트가 있지만 비활성화된 경우, 재활성화만 시도
+    if (this.client && !this.client.active) {
+      if (this.subscriptions.size > 0) {
         this.client.activate();
       }
       return;
+    }
+
+    // 서버 사이드에서는 클라이언트 생성하지 않음
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    // 이미 클라이언트 생성이 진행 중이면 무시 (동시 호출 방지)
+    if (this.isCreatingClient) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[stock-ws] 클라이언트 생성이 이미 진행 중입니다.");
+      }
+      return;
+    }
+
+    // 새 클라이언트 생성 (이미 존재하는 클라이언트가 없을 때만)
+    if (this.client) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn(
+          "[stock-ws] 클라이언트가 이미 존재하지만 활성화되지 않았습니다.",
+        );
+      }
+      return;
+    }
+
+    // 클라이언트 생성 시작 (동시 호출 방지)
+    this.isCreatingClient = true;
+
+    if (process.env.NODE_ENV === "development") {
+      console.info("[stock-ws] 새 웹소켓 클라이언트 생성 중...");
     }
 
     this.setState("connecting");
@@ -116,6 +153,10 @@ class StockRealtimeClient {
       heartbeatIncoming: 10000,
       heartbeatOutgoing: 10000,
       onConnect: () => {
+        if (process.env.NODE_ENV === "development") {
+          console.info("[stock-ws] 웹소켓 연결 성공");
+        }
+        this.isCreatingClient = false; // 생성 완료
         this.handleConnected();
       },
       debug: (message: string) => {
@@ -127,10 +168,15 @@ class StockRealtimeClient {
 
     this.client.onStompError = (frame) => {
       const message = frame.body || frame.headers.message || "STOMP 오류";
+      this.isCreatingClient = false; // 에러 발생 시 플래그 초기화
       this.setState("error", message);
     };
 
     this.client.onWebSocketClose = () => {
+      if (process.env.NODE_ENV === "development") {
+        console.info("[stock-ws] 웹소켓 연결 종료");
+      }
+      this.isCreatingClient = false; // 연결 종료 시 플래그 초기화
       if (this.subscriptions.size > 0) {
         this.setState("connecting");
       } else {
@@ -143,6 +189,7 @@ class StockRealtimeClient {
         typeof event === "string"
           ? event
           : (event?.toString?.() ?? "웹소켓 오류");
+      this.isCreatingClient = false; // 에러 발생 시 플래그 초기화
       this.setState("error", message);
     };
 
