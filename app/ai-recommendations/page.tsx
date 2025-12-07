@@ -19,6 +19,12 @@ interface Company {
   tag: string;
   price: string;
   change: string;
+  scores?: {
+    short_term: number;
+    mid_long_term: number;
+    total: number;
+  };
+  recommendation?: string;
 }
 
 interface KeywordSection {

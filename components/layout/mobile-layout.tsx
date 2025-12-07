@@ -76,9 +76,13 @@ export function MobileLayout({
   };
 
   return (
-    <div className="flex min-h-screen w-full justify-center bg-gray-50">
+    <div
+      className="flex min-h-screen w-full justify-center bg-gray-50"
+      suppressHydrationWarning
+    >
       <main
         className={`relative flex flex-col w-full max-w-[436px] h-screen bg-white shadow-xl ${className}`}
+        suppressHydrationWarning
       >
         {headerWithMenuHandler || <Header />}
         <div className="flex-1 overflow-y-auto pt-[52px] pb-[56px]">

@@ -22,6 +22,8 @@ export interface TechnicalAnalysis {
     Histogram: number[];
   };
   rsi: number[];
+  ema13: number[]; // 엘더레이 분석용
+  closes: number[]; // 엘더레이 분석용 (주가 데이터)
   aroon: {
     aroonUp: number[];
     aroonDown: number[];
@@ -55,6 +57,8 @@ export function calculateDEMA(data: number[], period: number): number[] {
 
 /**
  * MACD 계산
+ * 가이드 기준: MACD = 9일간 지수이동평균 - 26일간 지수이동평균
+ * Signal = MACD의 13일간 지수이동평균
  */
 export function calculateMACD(data: number[]): {
   MACD: number[];
@@ -63,9 +67,9 @@ export function calculateMACD(data: number[]): {
 } {
   const macdResult = MACD.calculate({
     values: data,
-    fastPeriod: 12,
+    fastPeriod: 9,
     slowPeriod: 26,
-    signalPeriod: 9,
+    signalPeriod: 13,
     SimpleMAOscillator: false,
     SimpleMASignal: false,
   });
@@ -322,6 +326,9 @@ export function performTechnicalAnalysis(
   // 아룬 지표
   const aroon = calculateAroon({ high: highs, low: lows }, 14);
 
+  // EMA13 계산 (엘더레이 분석용)
+  const ema13 = EMA.calculate({ values: closes, period: 13 });
+
   // 엘더레이 지표
   const elderRay = calculateElderRay({ high: highs, low: lows, close: closes });
 
@@ -349,6 +356,8 @@ export function performTechnicalAnalysis(
     dema120,
     macd,
     rsi,
+    ema13,
+    closes, // 주가 데이터 저장
     aroon,
     elderRay,
     forceIndex,
@@ -522,21 +531,46 @@ export function calculateScore(analysis: TechnicalAnalysis): {
 
   // 4. 거래량 오실레이터 분석 ⭐⭐⭐⭐☆
   const volumeOsc = analysis.volumeOscillator;
+  const closesForVolume = analysis.closes;
 
-  if (volumeOsc.length >= 2) {
-    const voBuy =
-      volumeOsc[volumeOsc.length - 2] <= 0 &&
-      volumeOsc[volumeOsc.length - 1] > 0;
-    const voSell =
-      volumeOsc[volumeOsc.length - 2] >= 0 &&
-      volumeOsc[volumeOsc.length - 1] < 0;
+  if (volumeOsc.length >= 2 && closesForVolume.length >= 2) {
+    const prevVo = volumeOsc[volumeOsc.length - 2];
+    const currentVo = volumeOsc[volumeOsc.length - 1];
+    const prevClose = closesForVolume[closesForVolume.length - 2];
+    const currentClose = closesForVolume[closesForVolume.length - 1];
+
+    // 거래량 오실레이터가 0선을 아래에서 위로 상향돌파 → 매입
+    const voBuy = prevVo <= 0 && currentVo > 0;
+    // 거래량 오실레이터가 0선을 위에서 아래로 하향돌파 → 매도
+    const voSell = prevVo >= 0 && currentVo < 0;
+
+    // 주가가 하락하는지 확인
+    const priceFalling = currentClose < prevClose;
+    // 주가가 상승하는지 확인
+    const priceRising = currentClose > prevClose;
+    // 거래량 오실레이터가 늘어나는지 확인
+    const voIncreasing = currentVo > prevVo;
+    // 거래량 오실레이터가 줄어드는지 확인
+    const voDecreasing = currentVo < prevVo;
 
     if (voBuy) {
-      shortScore += getSignalPoints("매입", weights.VOLUME_OSC);
-      midLongScore += getSignalPoints("매입", weights.VOLUME_OSC);
+      // 주가는 하락하는데 거래량 오실레이터가 늘어남 → 강력매입
+      if (priceFalling && voIncreasing) {
+        shortScore += getSignalPoints("강력매입", weights.VOLUME_OSC);
+        midLongScore += getSignalPoints("강력매입", weights.VOLUME_OSC);
+      } else {
+        shortScore += getSignalPoints("매입", weights.VOLUME_OSC);
+        midLongScore += getSignalPoints("매입", weights.VOLUME_OSC);
+      }
     } else if (voSell) {
-      shortScore += getSignalPoints("매도", weights.VOLUME_OSC);
-      midLongScore += getSignalPoints("매도", weights.VOLUME_OSC);
+      // 주가는 상승하는데 거래량 오실레이터가 줄어듦 → 강력매도
+      if (priceRising && voDecreasing) {
+        shortScore += getSignalPoints("강력매도", weights.VOLUME_OSC);
+        midLongScore += getSignalPoints("강력매도", weights.VOLUME_OSC);
+      } else {
+        shortScore += getSignalPoints("매도", weights.VOLUME_OSC);
+        midLongScore += getSignalPoints("매도", weights.VOLUME_OSC);
+      }
     }
   }
 
@@ -559,6 +593,203 @@ export function calculateScore(analysis: TechnicalAnalysis): {
     ) {
       shortScore += getSignalPoints("매도", weights.STOCH_RSI);
       midLongScore += getSignalPoints("매도", weights.STOCH_RSI);
+    }
+  }
+
+  // 6. 엘더레이 강세/약세지수 분석 ⭐⭐⭐☆
+  const elderRay = analysis.elderRay;
+  const ema13 = analysis.ema13;
+  const closes = analysis.closes;
+
+  if (
+    elderRay.bull.length >= 2 &&
+    elderRay.bear.length >= 2 &&
+    ema13.length >= 2 &&
+    closes.length >= 2
+  ) {
+    const currentBull = elderRay.bull[elderRay.bull.length - 1];
+    const currentBear = elderRay.bear[elderRay.bear.length - 1];
+    const prevBull = elderRay.bull[elderRay.bull.length - 2];
+    const prevBear = elderRay.bear[elderRay.bear.length - 2];
+    const currentEma = ema13[ema13.length - 1];
+    const prevEma = ema13[ema13.length - 2];
+    const currentClose = closes[closes.length - 1];
+    const prevClose = closes[closes.length - 2];
+
+    // EMA가 상승세인지 확인
+    const emaRising = currentEma > prevEma;
+    // EMA가 하락세인지 확인
+    const emaFalling = currentEma < prevEma;
+
+    // '지수이동평균(EMA)이 상승세이고', 'ERayBear 가 (-)상태에 있으나 점차 증가'→매입
+    if (emaRising && currentBear < 0 && currentBear > prevBear) {
+      // 추가 조건: 'ERayBull 이 전고점을 넘었고', 'ERayBear와 주가의 관계에서 다이버전스가 나타난다'→강력매입
+      // 전고점 찾기 (최근 20일 중)
+      const bullHistory = elderRay.bull.slice(-20);
+      const maxBull = Math.max(...bullHistory.slice(0, -1)); // 현재를 제외한 최고값
+      const bearHistory = elderRay.bear.slice(-20);
+      const closeHistory = closes.slice(-20);
+
+      // ERayBull이 전고점을 넘었는지 확인
+      const bullExceeded = currentBull > maxBull;
+
+      // 다이버전스 확인: 주가가 하락하는데 ERayBear가 상승 (강세 다이버전스)
+      let divergence = false;
+      if (closeHistory.length >= 5) {
+        const recentCloses = closeHistory.slice(-5);
+        const recentBears = bearHistory.slice(-5);
+        // 주가는 하락 추세인데 ERayBear는 상승 추세
+        const priceTrend =
+          recentCloses[recentCloses.length - 1] <
+          recentCloses[recentCloses.length - 3];
+        const bearTrend =
+          recentBears[recentBears.length - 1] >
+          recentBears[recentBears.length - 3];
+        divergence = priceTrend && bearTrend;
+      }
+
+      if (bullExceeded && divergence) {
+        shortScore += getSignalPoints("강력매입", weights.ELDER_RAY);
+        midLongScore += getSignalPoints("강력매입", weights.ELDER_RAY);
+      } else {
+        shortScore += getSignalPoints("매입", weights.ELDER_RAY);
+        midLongScore += getSignalPoints("매입", weights.ELDER_RAY);
+      }
+    }
+
+    // '지수이동평균(EMA)이 하락세이고', 'ERayBull 이 (+)상태에 있으나 점차 감소'→매도
+    if (emaFalling && currentBull > 0 && currentBull < prevBull) {
+      // 추가 조건: 'ERayBear 의 저점이 전저점 보다낮고', 'ERayBull과 주가의 관계에서 다이버전스가 나타난다'→강력매도
+      const bearHistory = elderRay.bear.slice(-20);
+      const minBear = Math.min(...bearHistory.slice(0, -1)); // 현재를 제외한 최저값
+      const bullHistory = elderRay.bull.slice(-20);
+      const closeHistory = closes.slice(-20);
+
+      // ERayBear의 저점이 전저점보다 낮은지 확인
+      const bearLower = currentBear < minBear;
+
+      // 다이버전스 확인: 주가가 상승하는데 ERayBull이 하락 (약세 다이버전스)
+      let divergence = false;
+      if (closeHistory.length >= 5) {
+        const recentCloses = closeHistory.slice(-5);
+        const recentBulls = bullHistory.slice(-5);
+        // 주가는 상승 추세인데 ERayBull은 하락 추세
+        const priceTrend =
+          recentCloses[recentCloses.length - 1] >
+          recentCloses[recentCloses.length - 3];
+        const bullTrend =
+          recentBulls[recentBulls.length - 1] <
+          recentBulls[recentBulls.length - 3];
+        divergence = priceTrend && bullTrend;
+      }
+
+      if (bearLower && divergence) {
+        shortScore += getSignalPoints("강력매도", weights.ELDER_RAY);
+        midLongScore += getSignalPoints("강력매도", weights.ELDER_RAY);
+      } else {
+        shortScore += getSignalPoints("매도", weights.ELDER_RAY);
+        midLongScore += getSignalPoints("매도", weights.ELDER_RAY);
+      }
+    }
+  }
+
+  // 7. 포스 인덱스 분석 ⭐
+  const forceIndex = analysis.forceIndex;
+  const closesForForce = analysis.closes;
+
+  if (forceIndex.length >= 2 && closesForForce.length >= 2) {
+    const currentForce = forceIndex[forceIndex.length - 1];
+    const prevForce = forceIndex[forceIndex.length - 2];
+    const currentClose = closesForForce[closesForForce.length - 1];
+    const prevClose = closesForForce[closesForForce.length - 2];
+
+    // 주가가 하락 중인지 확인
+    const priceFalling = currentClose < prevClose;
+    // 주가가 상승 중인지 확인
+    const priceRising = currentClose > prevClose;
+
+    // 포스 인덱스가 어제에 비해 크게 늘어나면 시장 상승추세가 강력
+    const forceIncreasing = currentForce > prevForce * 1.1;
+    // 포스 인덱스가 어제에 비해 크게 감소하면 시장 하락추세가 강력
+    const forceDecreasing = currentForce < prevForce * 0.9;
+
+    // 주가가 하락 중인데 포스 인덱스가 늘고 있으면 조만간 상승세 → 매입
+    if (priceFalling && forceIncreasing) {
+      shortScore += getSignalPoints("매입", weights.FORCE_INDEX);
+      midLongScore += getSignalPoints("매입", weights.FORCE_INDEX);
+    }
+    // 주가가 상승 중인데 포스 인덱스가 줄고 있으면 조만간 하락세 → 매도
+    else if (priceRising && forceDecreasing) {
+      shortScore += getSignalPoints("매도", weights.FORCE_INDEX);
+      midLongScore += getSignalPoints("매도", weights.FORCE_INDEX);
+    }
+  }
+
+  // 8. 상대변동성지수 (RVI) 분석 ⭐⭐⭐⭐⭐☆
+  const rvi = analysis.rvi;
+  if (rvi.length >= 20) {
+    // RVI의 5일 이동평균과 20일 이동평균 계산
+    const rvi5 = rvi.slice(-5);
+    const rvi20 = rvi.slice(-20);
+    const rvi5Avg = rvi5.reduce((a, b) => a + b, 0) / rvi5.length;
+    const rvi20Avg = rvi20.reduce((a, b) => a + b, 0) / rvi20.length;
+
+    // 이전 기간의 평균도 계산
+    const prevRvi5 = rvi.slice(-6, -1);
+    const prevRvi20 = rvi.slice(-21, -1);
+    const prevRvi5Avg = prevRvi5.reduce((a, b) => a + b, 0) / prevRvi5.length;
+    const prevRvi20Avg =
+      prevRvi20.reduce((a, b) => a + b, 0) / prevRvi20.length;
+
+    const currentRvi = rvi[rvi.length - 1];
+
+    // RVI > 50 & RVI의 5일이동평균이 20일이동평균을 상향돌파 → 매입
+    if (currentRvi > 50 && prevRvi5Avg <= prevRvi20Avg && rvi5Avg > rvi20Avg) {
+      shortScore += getSignalPoints("매입", weights.RVI);
+      midLongScore += getSignalPoints("매입", weights.RVI);
+    }
+    // RVI ≥ 60 (무시된 매수 신호 이후) → 강력 매입
+    else if (currentRvi >= 60) {
+      shortScore += getSignalPoints("강력매입", weights.RVI);
+      midLongScore += getSignalPoints("강력매입", weights.RVI);
+    }
+    // RVI < 50 & RVI의 5일이동평균이 20일이동평균을 하향돌파 → 매도
+    else if (
+      currentRvi < 50 &&
+      prevRvi5Avg >= prevRvi20Avg &&
+      rvi5Avg < rvi20Avg
+    ) {
+      shortScore += getSignalPoints("매도", weights.RVI);
+      midLongScore += getSignalPoints("매도", weights.RVI);
+    }
+    // RVI ≤ 40 (무시된 매도 신호 이후) → 강력 매도
+    else if (currentRvi <= 40) {
+      shortScore += getSignalPoints("강력매도", weights.RVI);
+      midLongScore += getSignalPoints("강력매도", weights.RVI);
+    }
+  }
+
+  // 9. 스토캐스틱 모멘텀지수 (SMI) 분석 ⭐⭐⭐
+  const smi = analysis.smi;
+  if (smi.length >= 14) {
+    // SMI의 signal 계산 (EMA(SMI))
+    const smiSignal = EMA.calculate({ values: smi, period: 13 });
+
+    if (smi.length >= 2 && smiSignal.length >= 2) {
+      const smiBuy =
+        smi[smi.length - 2] <= smiSignal[smiSignal.length - 2] &&
+        smi[smi.length - 1] > smiSignal[smiSignal.length - 1];
+      const smiSell =
+        smi[smi.length - 2] >= smiSignal[smiSignal.length - 2] &&
+        smi[smi.length - 1] < smiSignal[smiSignal.length - 1];
+
+      if (smiBuy) {
+        shortScore += getSignalPoints("매입", weights.SMI);
+        midLongScore += getSignalPoints("매입", weights.SMI);
+      } else if (smiSell) {
+        shortScore += getSignalPoints("매도", weights.SMI);
+        midLongScore += getSignalPoints("매도", weights.SMI);
+      }
     }
   }
 

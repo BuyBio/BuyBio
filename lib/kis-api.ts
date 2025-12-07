@@ -189,7 +189,12 @@ export async function getStockDailyData(
       };
     });
   } catch (error) {
-    console.error(`종목 ${stockCode} 일봉 조회 실패:`, error);
+    // 에러 로그는 간단하게만 출력 (너무 많은 로그 방지)
+    if (error instanceof Error && error.message.includes("500")) {
+      // 500 에러는 조용히 처리 (API 서버 문제)
+    } else {
+      console.warn(`종목 ${stockCode} 일봉 조회 실패`);
+    }
     throw new Error(`종목 ${stockCode}의 일봉 데이터 조회에 실패했습니다.`);
   }
 }
