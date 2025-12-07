@@ -181,8 +181,17 @@ async function fetchStockDataFromWebSocket(
 
   // 3. 데이터 결합
   dailyDataResults.forEach(({ code, dailyData }) => {
-    if (!dailyData || dailyData.length < 50) {
-      return; // 최소 50일 데이터 필요
+    if (!dailyData) {
+      console.warn(`[데이터 없음] 종목코드 ${code}: 일봉 데이터가 없습니다.`);
+      return;
+    }
+
+    // 30일 이상이면 사용 (기술 지표 분석은 50일 이상 권장이지만, 30일도 가능)
+    if (dailyData.length < 30) {
+      console.warn(
+        `[데이터 부족] 종목코드 ${code}: ${dailyData.length}일 (최소 30일 필요)`,
+      );
+      return;
     }
 
     // 최신 데이터 (가장 최근 날짜) - 날짜 기준으로 확실하게 선택
@@ -215,6 +224,9 @@ async function fetchStockDataFromWebSocket(
 
     console.log(
       `[최종 가격] 종목코드 ${code}: ${currentPrice.price}원 (변동률: ${currentPrice.changeRate.toFixed(2)}%)`,
+    );
+    console.log(
+      `[가격 상세] 종목코드 ${code}: latestData.close=${latestData.close}, currentPrice.price=${currentPrice.price}, 타입=${typeof currentPrice.price}`,
     );
 
     result[code] = {
@@ -289,8 +301,11 @@ export async function POST(request: NextRequest) {
               // 웹소켓으로 받은 데이터 확인
               const wsData = webSocketStockData[stockCode];
 
-              if (!wsData?.dailyData || wsData.dailyData.length < 50) {
-                // 웹소켓 데이터가 없거나 부족한 경우 스킵
+              if (!wsData?.dailyData || wsData.dailyData.length < 30) {
+                // 웹소켓 데이터가 없거나 부족한 경우 스킵 (최소 30일)
+                console.warn(
+                  `[데이터 부족] ${company.name} (${stockCode}): ${wsData?.dailyData?.length || 0}일`,
+                );
                 return {
                   ...company,
                   scores: null,
@@ -298,11 +313,15 @@ export async function POST(request: NextRequest) {
                 };
               }
 
-              // 기술적 분석 수행
+              // 기술적 분석 수행 (최소 30일 필요)
               const analysis = performTechnicalAnalysis(wsData.dailyData);
               if (!analysis) {
+                // 기술 지표 분석 실패 시 가격만 반환
+                const currentPriceData = wsData.currentPrice;
                 return {
                   ...company,
+                  price: `${currentPriceData.price.toLocaleString()}원`,
+                  change: `${currentPriceData.changeRate > 0 ? "+" : ""}${currentPriceData.changeRate.toFixed(2)}%`,
                   scores: null,
                   recommendation: null,
                 };
@@ -311,22 +330,27 @@ export async function POST(request: NextRequest) {
               // 점수 계산
               const scoreResult = calculateScore(analysis);
 
+              // scoreResult는 위에서 이미 계산됨
+
               // 현재가 정보 처리
               const currentPriceData = wsData.currentPrice;
 
               // dailyData 배열의 첫 번째 요소가 정말 최신인지 확인
               const firstData = wsData.dailyData[0];
               const lastData = wsData.dailyData[wsData.dailyData.length - 1];
+              const formattedPrice = `${currentPriceData.price.toLocaleString()}원`;
+
               console.log(
                 `[가격 확인] ${company.name} (${stockCode}):`,
                 `첫번째데이터=${firstData?.date.toISOString().split("T")[0]} 종가=${firstData?.close}`,
                 `마지막데이터=${lastData?.date.toISOString().split("T")[0]} 종가=${lastData?.close}`,
-                `반환가격=${currentPriceData.price}`,
+                `currentPriceData.price=${currentPriceData.price}`,
+                `formattedPrice=${formattedPrice}`,
               );
 
               return {
                 ...company,
-                price: `${currentPriceData.price.toLocaleString()}원`,
+                price: formattedPrice,
                 change: `${currentPriceData.changeRate > 0 ? "+" : ""}${currentPriceData.changeRate.toFixed(2)}%`,
                 scores: {
                   short_term: scoreResult.shortScore,

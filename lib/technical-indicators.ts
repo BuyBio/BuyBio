@@ -294,8 +294,8 @@ export function calculateVolumeOscillator(data: {
 export function performTechnicalAnalysis(
   stockData: StockData[],
 ): TechnicalAnalysis | null {
-  if (stockData.length < 50) {
-    console.warn(`데이터가 부족합니다: ${stockData.length}개 (최소 50개 필요)`);
+  if (stockData.length < 30) {
+    console.warn(`데이터가 부족합니다: ${stockData.length}개 (최소 30개 필요)`);
     return null;
   }
 
