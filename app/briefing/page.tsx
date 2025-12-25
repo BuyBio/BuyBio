@@ -1,4 +1,8 @@
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 import { MobileLayout } from "@/components/layout/mobile-layout";
 import {
@@ -9,8 +13,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Header from "@/components/ui/header";
+import { VideoModal } from "@/components/ui/video-modal";
 
 export default function BriefingPage() {
+  const [selectedVideo, setSelectedVideo] = useState<{
+    videoId: string;
+    title: string;
+  } | null>(null);
+
   // 임시 목데이터
   const hotNewsItems = [
     {
@@ -43,17 +53,17 @@ export default function BriefingPage() {
     {
       title: "임상 단계 한눈에 정리 — 투자 포인트 3가지",
       duration: "08:21",
-      href: "/briefing",
+      videoId: "Scq-SCyXzwQ",
     },
     {
       title: "바이오 섹터 사이클, 지금은 어디?",
       duration: "12:05",
-      href: "/briefing",
+      videoId: "3wisLftUrp8",
     },
     {
       title: "신약 파이프라인 리딩 방법(초심자용)",
       duration: "09:47",
-      href: "/briefing",
+      videoId: "b9L294DrnHU",
     },
   ];
 
@@ -161,13 +171,30 @@ export default function BriefingPage() {
           </CardHeader>
           <CardContent className="pt-2 grid grid-cols-3 gap-3">
             {videoItems.map((v) => (
-              <Link
+              <button
                 key={v.title}
-                href={v.href ?? "/briefing"}
-                className="group flex flex-col gap-2 rounded-2xl border border-gray-200/70 bg-white/90 p-2 transition-all duration-150 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white"
+                type="button"
+                onClick={() =>
+                  setSelectedVideo({ videoId: v.videoId, title: v.title })
+                }
+                className="group flex flex-col gap-2 rounded-2xl border border-gray-200/70 bg-white/90 p-2 transition-all duration-150 hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white text-left"
               >
                 <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-200">
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  {/* 유튜브 썸네일 이미지 */}
+                  <Image
+                    src={`https://img.youtube.com/vi/${v.videoId}/maxresdefault.jpg`}
+                    alt={v.title}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                    onError={(e) => {
+                      // maxresdefault가 없으면 hqdefault로 fallback
+                      const target = e.target as HTMLImageElement;
+                      target.src = `https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg`;
+                    }}
+                  />
+                  {/* 재생 버튼 오버레이 */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white transition-transform duration-150 group-hover:scale-105">
                       ▶
                     </div>
@@ -177,7 +204,7 @@ export default function BriefingPage() {
                   {v.title}
                 </p>
                 <p className="text-[11px] text-gray-500">{v.duration}</p>
-              </Link>
+              </button>
             ))}
           </CardContent>
         </Card>
@@ -209,6 +236,14 @@ export default function BriefingPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* 유튜브 영상 모달 */}
+      <VideoModal
+        isOpen={!!selectedVideo}
+        onClose={() => setSelectedVideo(null)}
+        videoId={selectedVideo?.videoId}
+        title={selectedVideo?.title}
+      />
     </MobileLayout>
   );
 }
