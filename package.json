@@ -13,6 +13,7 @@
     "@auth/supabase-adapter": "^1.11.1",
     "@radix-ui/react-progress": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.2",
+    "@radix-ui/react-tabs": "^1.1.13",
     "@stomp/stompjs": "^7.2.1",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.4",

@@ -8,6 +8,7 @@ import { MobileLayout } from "@/components/layout/mobile-layout";
 import Header from "@/components/ui/header";
 import { PopupCard } from "@/components/ui/popup-card";
 import { StockTickerCard } from "@/components/ui/stock-ticker-card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useSession } from "next-auth/react";
 
@@ -15,6 +16,40 @@ interface InvestmentProfile {
   selections: string[];
   updatedAt?: string;
 }
+
+type RankingTabValue = "rise" | "fall" | "volume" | "amount";
+
+const rankingTabs: { value: RankingTabValue; label: string; accent: string }[] =
+  [
+    { value: "rise", label: "상승", accent: "text-rose-600" },
+    { value: "fall", label: "하락", accent: "text-slate-600" },
+    { value: "volume", label: "거래량", accent: "text-blue-600" },
+    { value: "amount", label: "거래대금", accent: "text-emerald-600" },
+  ];
+
+const rankingData: Record<RankingTabValue, { name: string; value: string }[]> =
+  {
+    rise: [
+      { name: "에이비엘바이오", value: "+7.3%" },
+      { name: "두산에너빌리티", value: "+5.1%" },
+      { name: "NAVER", value: "+3.8%" },
+    ],
+    fall: [
+      { name: "천일고속", value: "-2.4%" },
+      { name: "SK하이닉스", value: "-1.7%" },
+      { name: "LG전자", value: "-1.1%" },
+    ],
+    volume: [
+      { name: "삼성전자", value: "12.4M" },
+      { name: "현대자동차", value: "9.1M" },
+      { name: "LG전자", value: "7.8M" },
+    ],
+    amount: [
+      { name: "삼성전자", value: "1.2조" },
+      { name: "NAVER", value: "0.9조" },
+      { name: "현대자동차", value: "0.7조" },
+    ],
+  };
 
 export default function Home() {
   const [showPopup, setShowPopup] = useState(true);
@@ -86,7 +121,7 @@ export default function Home() {
     >
       <div className="flex items-center justify-center min-h-full">
         <div className="w-full p-4 space-y-4">
-          <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          {/* <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-slate-500">
@@ -109,9 +144,49 @@ export default function Home() {
               <StockTickerCard symbol="064400" label="LG씨엔에스" />
               <StockTickerCard symbol="035420" label="NAVER" />
             </div>
+          </section> */}
+
+          <section className="rounded-2xl bg-white p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-slate-800">
+                  종목 랭킹
+                </p>
+              </div>
+            </div>
+            <Tabs defaultValue="rise" className="mt-3">
+              <TabsList className="grid grid-cols-4 gap-2 rounded-full bg-slate-100 p-1 text-xs font-semibold text-slate-500">
+                {rankingTabs.map((tab) => (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="rounded-full px-3 py-2 text-xs data-[state=active]:bg-rose-100 data-[state=active]:text-rose-600 data-[state=active]:shadow-none"
+                  >
+                    {tab.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {rankingTabs.map((tab) => (
+                <TabsContent key={tab.value} value={tab.value} className="mt-3">
+                  <div className="space-y-2 rounded-2xl bg-slate-50 p-3">
+                    {rankingData[tab.value].map((item) => (
+                      <div
+                        key={`${tab.value}-${item.name}`}
+                        className="flex items-center justify-between rounded-xl bg-white px-3 py-2 text-sm text-slate-700 shadow-sm"
+                      >
+                        <span>{item.name}</span>
+                        <span className={`font-semibold ${tab.accent}`}>
+                          {item.value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
           </section>
 
-          <p className="text-gray-500 text-center">BuyBio App</p>
+          {/* <p className="text-gray-500 text-center">BuyBio App</p> */}
 
           {/* Popup Card Example */}
           {!hasProfile && showPopup && (
